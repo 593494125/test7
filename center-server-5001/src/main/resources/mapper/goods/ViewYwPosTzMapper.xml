@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.goods.ViewYwPosTzMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.goods.ViewYwPosTz">
+        <result column="jyh" property="jyh" />
+        <result column="bmbh" property="bmbh" />
+        <result column="rq" property="rq" />
+        <result column="skyh" property="skyh" />
+        <result column="jqbh" property="jqbh" />
+        <result column="jffs" property="jffs" />
+        <result column="hyh" property="hyh" />
+        <result column="lydh" property="lydh" />
+        <result column="xgr" property="xgr" />
+        <result column="xgsj" property="xgsj" />
+        <result column="jzr" property="jzr" />
+        <result column="jzsj" property="jzsj" />
+        <result column="jzbz" property="jzbz" />
+        <result column="gwqzfc" property="gwqzfc" />
+        <result column="wzflag" property="wzflag" />
+        <result column="kdsj" property="kdsj" />
+        <result column="spbh" property="spbh" />
+        <result column="yyyh" property="yyyh" />
+        <result column="lsfs" property="lsfs" />
+        <result column="spkh" property="spkh" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="cm" property="cm" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="yslsj" property="yslsj" />
+        <result column="ysdpj" property="ysdpj" />
+        <result column="yszkl" property="yszkl" />
+        <result column="danjia" property="danjia" />
+        <result column="lsj" property="lsj" />
+        <result column="zkl" property="zkl" />
+        <result column="bzxx" property="bzxx" />
+        <result column="sl" property="sl" />
+        <result column="sjje" property="sjje" />
+        <result column="zke" property="zke" />
+        <result column="yhje" property="yhje" />
+        <result column="hykh" property="hykh" />
+        <result column="xsje" property="xsje" />
+        <result column="xj" property="xj" />
+        <result column="xyk" property="xyk" />
+        <result column="hyk" property="hyk" />
+        <result column="gwq" property="gwq" />
+        <result column="ng" property="ng" />
+        <result column="ngwx" property="ngwx" />
+        <result column="ali" property="ali" />
+        <result column="yhe" property="yhe" />
+        <result column="dj" property="dj" />
+        <result column="zdyzf" property="zdyzf" />
+        <result column="zdyzf1" property="zdyzf1" />
+        <result column="zdyzf2" property="zdyzf2" />
+        <result column="zdyzf3" property="zdyzf3" />
+        <result column="zdyzf4" property="zdyzf4" />
+        <result column="zdyzf5" property="zdyzf5" />
+        <result column="jfje" property="jfje" />
+        <result column="dyje" property="dyje" />
+        <result column="ngq" property="ngq" />
+        <result column="jf" property="jf" />
+        <result column="ybcxfa" property="ybcxfa" />
+        <result column="diejiacxfa" property="diejiacxfa" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        jyh, bmbh, rq, skyh, jqbh, jffs, hyh, lydh, xgr, xgsj, jzr, jzsj, jzbz, gwqzfc, wzflag, kdsj, spbh, yyyh, lsfs, spkh, ysbh, yslsh, cm, cmzbh, bxbh, bxmc, yslsj, ysdpj, yszkl, danjia, lsj, zkl, bzxx, sl, sjje, zke, yhje, hykh, xsje, xj, xyk, hyk, gwq, ng, ngwx, ali, yhe, dj, zdyzf, zdyzf1, zdyzf2, zdyzf3, zdyzf4, zdyzf5, jfje, dyje, ngq, jf, ybcxfa, diejiacxfa
+    </sql>
+
+</mapper>

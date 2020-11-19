@@ -1,0 +1,143 @@
+package com.springboot.service.impl.org;
+
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.springboot.dao.org.BaseOrgMapper;
+import com.springboot.model.org.BaseOrg;
+import com.springboot.model.redisdatasource.BaseOrgRedisDatasource;
+import com.springboot.model.user.BaseAuth;
+import com.springboot.service.datasource.BaseDatasourceService;
+import com.springboot.service.equip.BaseEquipService;
+import com.springboot.service.org.BaseOrgService;
+import com.springboot.service.redisdatasource.BaseOrgRedisDatasourceService;
+import com.springboot.service.redisdatasource.BaseRedisDatasourceService;
+import com.springboot.service.user.BaseAuthService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+@Service
+@Transactional(rollbackFor = Exception.class)
+public class BaseOrgServiceImpl extends ServiceImpl<BaseOrgMapper, BaseOrg> implements BaseOrgService {
+
+    @Resource
+    private BaseOrgMapper baseOrgMapper;
+    @Resource
+    private BaseAuthService baseAuthService;
+    @Resource
+    private BaseEquipService baseEquipService;
+    @Resource
+    private BaseDatasourceService baseDatasourceService;
+    @Resource
+    private BaseOrgRedisDatasourceService baseOrgRedisDatasourceService;
+    @Override
+    public Page<BaseOrg> getPage(String orgId,Page<BaseOrg> page,BaseOrg org, Map<String, String> param) {
+        Integer pageNo=org.getPageNo();
+        Integer pageSize=org.getPageSize();
+        EntityWrapper<BaseOrg> entityWrapper=new EntityWrapper<BaseOrg>();
+        if(StringUtils.isNotEmpty(param.get("orgName"))){
+            entityWrapper.like("org_name",param.get("orgName"));
+        }
+        Integer count =baseOrgMapper.selectCount(entityWrapper);
+        List<BaseOrg> list=baseOrgMapper.getPage(param.get("key"),pageNo,pageSize);
+//           List<BaseOrg> list=baseOrgMapper.selectPage(page,entityWrapper.orderDesc(Arrays.asList(new String[]{"update_time"})));
+        if(list!=null&&list.size()>0){
+            int k=list.size();
+            for (int i = 0; i < k; i++) {
+                //获取许可证数量
+//                BaseAuth baseAuth=baseAuthService.findByorgId("",list.get(i).getId());
+                //获取注册设备数量
+                Integer equiptCount= baseEquipService.getCountByOrgId("",list.get(i).getId());
+                //获取数据源
+//                Integer sourceCount=baseDatasourceService.getCountByOrgId("",list.get(i).getId());
+                //获取redis数据源
+//                BaseOrgRedisDatasource baseOrgRedisDatasource=baseOrgRedisDatasourceService.findByOrgId("",list.get(i).getId());
+                //获取主机头
+//                BaseOrg org =baseOrgMapper.selectById(list.get(i).getId());
+
+               String host= list.get(i).getHostAddress();
+               if(StringUtils.isNotEmpty(host)){
+                   list.get(i).setOrgHostCount(1);
+                   list.get(i).setHostAddress(host);
+               }else{
+                   list.get(i).setOrgHostCount(0);
+                   list.get(i).setHostAddress("");
+               }
+
+                if(StringUtils.isNotEmpty(list.get(i).getRedisId())){
+                    list.get(i).setRedisSourceCount(1);
+                }else{
+                    list.get(i).setRedisSourceCount(0);
+                }
+                list.get(i).setEquiptCount(equiptCount);
+                if(StringUtils.isNotEmpty(list.get(i).getSixCode())){
+                    list.get(i).setSixCodeCount(1);
+                    list.get(i).setSixCode(list.get(i).getSixCode());
+                }else{
+                    list.get(i).setSixCodeCount(0);
+                    list.get(i).setSixCode("");
+                }
+
+                if(StringUtils.isNotEmpty(list.get(i).getCode())){
+                    list.get(i).setSourceCount(1);//有数据源
+                }else{
+                    list.get(i).setSourceCount(0);//无数据源
+                }
+            }
+        }
+        page.setRecords(list);
+        page.setCurrent(pageNo);
+        page.setSize(pageSize);
+        page.setTotal(count);
+        return page;
+    }
+
+    @Override
+    public List<BaseOrg> getList(String orgId, Map<String, String> param) {
+        List<BaseOrg> list=baseOrgMapper.getList(param);
+        return list;
+    }
+
+    @Override
+    public void insertBean(String orgId,BaseOrg bean) {
+        baseOrgMapper.insert(bean);
+    }
+
+    @Override
+    public void deleteById(String orgId, String id) {
+        baseOrgMapper.deleteById(id);
+    }
+
+    @Override
+    public Integer updateById(String orgId, BaseOrg BaseOrg) {
+        Integer count=baseOrgMapper.updateById(BaseOrg);
+        return count;
+    }
+
+    @Override
+    public BaseOrg findById(String sixCode, String id) {
+        BaseOrg org=null;
+        if(StringUtils.isNotEmpty(id)){
+            org= baseOrgMapper.selectById(id);
+        }else{
+            BaseAuth baseAuth=baseAuthService.findBySixCode("",sixCode);
+            if(baseAuth!=null){
+                org=baseOrgMapper.selectById(baseAuth.getOrgId());
+            }
+        }
+        return org;
+    }
+
+    @Override
+    public String findIsStartTmFangan(String sixCode,String orgId) {
+        String isStartTmFangan=baseOrgMapper.findIsStartTmFangan(orgId);
+        return isStartTmFangan;
+    }
+
+}

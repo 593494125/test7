@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.goods.DaSpBxdaMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.goods.DaSpBxda">
+        <id column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="sslb" property="sslb" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        bxbh, bxmc, sslb
+    </sql>
+
+    <select id="findByBxbh" parameterType="java.lang.String" resultType="String">
+        select bxmc
+        from da_sp_bxda
+        <where>
+            <if test="bxbh!=null and bxbh!=''">and bxbh =#{bxbh}</if>
+        </where>
+    </select>
+    <select id="findList" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpBxda">
+        select bxbh,bxmc from da_sp_bxda
+    </select>
+    <select id="findSystemQybz"  resultType="com.springboot.model.goods.DaSpBxbt">
+        select * from da_sp_bxbt
+    </select>
+</mapper>

@@ -1,0 +1,161 @@
+package com.springboot.common;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @Author : JCccc
+ * @CreateTime : 2019/10/22
+ * @Description :
+ **/
+@Configuration
+@EnableTransactionManagement
+public class DruidDBConfig {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    // adi数据库连接信息
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClassName;
+    // 连接池连接信息
+    @Value("${spring.datasource.dbcp2.initial-size}")
+    private int initialSize;
+    @Value("${spring.datasource.dbcp2.max-idle}")
+    private int minIdle;
+    @Value("${spring.datasource.dbcp2.max-total}")
+    private int maxActive;
+    @Value("${spring.datasource.dbcp2.max-wait-millis}")
+    private int maxWait;
+
+    @Bean // 声明其为Bean实例
+    @Primary // 在同样的DataSource中，首先使用被标注的DataSource
+    @Qualifier("mainDataSource")
+    public DataSource dataSource() throws SQLException {
+        DruidDataSource datasource = new DruidDataSource();
+        // 基础连接信息
+        datasource.setUrl(this.dbUrl);
+        datasource.setUsername(username);
+        datasource.setPassword(password);
+        datasource.setDriverClassName(driverClassName);
+        // 连接池连接信息
+        datasource.setInitialSize(initialSize);
+        datasource.setMaxActive(maxActive);
+        datasource.setMinIdle(minIdle);
+        datasource.setMaxWait(maxWait);
+        datasource.setPoolPreparedStatements(true); //是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+        datasource.setMaxPoolPreparedStatementPerConnectionSize(20);
+        datasource.setTimeBetweenEvictionRunsMillis(60000); //配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        datasource.setMinEvictableIdleTimeMillis(180000); //配置一个连接在池中最小生存的时间，单位是毫秒，这里配置为3分钟180000
+        datasource.setMaxEvictableIdleTimeMillis(250000);
+        datasource.setKeepAlive(true); //打开druid.keepAlive之后，当连接池空闲时，池中的minIdle数量以内的连接，空闲时间超过minEvictableIdleTimeMillis，则会执行keepAlive操作，即执行druid.validationQuery指定的查询SQL，一般为select * from dual，只要minEvictableIdleTimeMillis设置的小于防火墙切断连接时间，就可以保证当连接空闲时自动做保活检测，不会被防火墙切断
+
+        datasource.setRemoveAbandoned(true); //是否移除泄露的连接/超过时间限制是否回收。
+        datasource.setRemoveAbandonedTimeout(1800); //泄露连接的定义时间(要超过最大事务的处理时间)；单位为秒。这里配置为1小时
+        datasource.setLogAbandoned(true); ////移除泄露连接发生是是否记录日志
+        datasource.setTestOnBorrow(true);
+        datasource.setTestWhileIdle(true);
+        datasource.setTestOnReturn(false);
+        datasource.setValidationQuery("select 1");
+        return datasource;
+
+
+    }
+
+
+    @Bean(name = "dynamicDataSource")
+    @Qualifier("dynamicDataSource")
+    public DynamicDataSource dynamicDataSource() throws SQLException {
+        DynamicDataSource dynamicDataSource = new DynamicDataSource();
+        dynamicDataSource.setDebug(false);
+        //配置缺省的数据源
+        // 默认数据源配置 DefaultTargetDataSource
+        dynamicDataSource.setDefaultTargetDataSource(dataSource());
+        Map<Object, Object> targetDataSources = new HashMap<Object, Object>();
+        //额外数据源配置 TargetDataSources
+        targetDataSources.put("mainDataSource", dataSource());
+        dynamicDataSource.setTargetDataSources(targetDataSources);
+        return dynamicDataSource;
+    }
+    /***
+     * sqlSessionTemplate 与 Spring 事务管理一起使用，以确保使用的实际 SqlSession 是与当前 Spring 事务关联的,
+     * 此外它还管理会话生命周期，包括根据 Spring 事务配置根据需要关闭，提交或回滚会话
+     */
+//    @Bean(name = "sqlSessionTemplate")
+//    public CustomSqlSessionTemplate sqlSessionTemplate() {
+//        SqlSessionFactory sqlSessionFactory = null;
+//        try {
+//            sqlSessionFactory=this.sqlSessionFactory();
+//            Map<Object, SqlSessionFactory> sqlSessionFactoryMap = new HashMap<>();
+//            sqlSessionFactoryMap.put("mainDataSource", sqlSessionFactory);
+//            CustomSqlSessionTemplate customSqlSessionTemplate = new CustomSqlSessionTemplate(sqlSessionFactory);
+//            customSqlSessionTemplate.setTargetSqlSessionFactories(sqlSessionFactoryMap);
+//            return customSqlSessionTemplate;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//    @Bean(name = "bfJdbcTemplate")
+//    public JdbcTemplate bfJdbcTemplate()
+//
+//    {
+//        try {
+//            return new JdbcTemplate(dynamicDataSource());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//    @Bean(name = "dataSourceTransactionManager")
+//    public DataSourceTransactionManager dataSourceTransactionManager() {
+//        try {
+//            DynamicDataSource dynamicDataSource=dynamicDataSource();
+//            return new DataSourceTransactionManager(dynamicDataSource);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    @Bean
+    public SqlSessionFactory sqlSessionFactory() throws Exception {
+        MybatisSqlSessionFactoryBean sqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
+//        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dynamicDataSource());
+
+        // 设置mybatis的主配置文件
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        //就是这句代码，只能指定单个mapper.xml文件，加通配符的话找不到文件
+        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:/mapper/**/*.xml"));
+
+        //下面这一行！！！
+        sqlSessionFactoryBean.setPlugins(new Interceptor[]{new PaginationInterceptor()});
+        return sqlSessionFactoryBean.getObject();
+    }
+
+
+}
+

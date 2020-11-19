@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.system.DaQxZydaMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.system.DaQxZyda">
+        <id column="gnbh" property="gnbh" />
+        <result column="gnmc" property="gnmc" />
+        <result column="bzxx" property="bzxx" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        gnbh, gnmc, bzxx
+    </sql>
+    <select id="findAll" parameterType="java.lang.String" resultType="com.springboot.model.system.DaQxZyda">
+        SELECT * from  da_qx_zyda
+    </select>
+    <select id="findZyzfc" resultType="com.springboot.model.system.ZyzfcJson">
+        select zyzfc from dbo.da_xt_sjcd WHERE sjbh='SJ526'
+    </select>
+    <select id="newFindZyzfc" resultType="com.springboot.model.system.ZyzfcUserJson">
+        select sjbh,zyzfc from dbo.da_xt_sjcd
+    </select>
+    <select id="findUserZyzfc" resultType="com.springboot.model.system.ZyzfcJson">
+        select zyzfc from da_qx_mokuai where yhbh=(select groupid from da_qx_group_user where yhbh=#{ygbh}) and cdbh='SJ526'
+    </select>
+    <select id="newFindUserZyzfc" resultType="com.springboot.model.system.ZyzfcUserJson">
+        select cdbh sjbh,zyzfc from da_qx_mokuai where yhbh=(select groupid from da_qx_group_user where yhbh=#{ygbh})
+    </select>
+
+</mapper>

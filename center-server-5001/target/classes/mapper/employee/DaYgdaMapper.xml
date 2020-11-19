@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.employee.DaYgdaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.employee.DaYgda">
+        <id column="ygbh" property="ygbh" />
+        <result column="ygmc" property="ygmc" />
+        <result column="yhmm" property="yhmm" />
+        <result column="jdbh" property="jdbh" />
+        <result column="ssbm" property="ssbm" />
+        <result column="xb" property="xb" />
+        <result column="xl" property="xl" />
+        <result column="zw" property="zw" />
+        <result column="lxdh" property="lxdh" />
+        <result column="zz" property="zz" />
+        <result column="sfzh" property="sfzh" />
+        <result column="ywz" property="ywz" />
+        <result column="rzsj" property="rzsj" />
+        <result column="dqzt" property="dqzt" />
+        <result column="jp" property="jp" />
+        <result column="bzxx" property="bzxx" />
+        <result column="yhbz" property="yhbz" />
+        <result column="ygsr" property="ygsr" />
+        <result column="zdzkl" property="zdzkl" />
+        <result column="bmsq" property="bmsq" />
+        <result column="khsq" property="khsq" />
+        <result column="gyssq" property="gyssq" />
+        <result column="ppsq" property="ppsq" />
+        <result column="ygsq" property="ygsq" />
+        <result column="qtjqm" property="qtjqm" />
+        <result column="htjqm" property="htjqm" />
+        <result column="qxz" property="qxz" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.springboot.model.employee.DaYgdaJson">
+        <id column="ygbh" property="ygbh" />
+        <result column="ygmc" property="ygmc" />
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ygbh, ygmc, yhmm, jdbh, ssbm, xb, xl, zw, lxdh, zz, sfzh, ywz, rzsj, dqzt, jp, bzxx, yhbz, ygsr, zdzkl, bmsq, khsq, gyssq, ppsq, ygsq, qtjqm, htjqm, qxz
+    </sql>
+
+    <select id="findCgy" resultMap="BaseResultMap1">
+        select upper(yhbh)ygbh,upper(yhmc)ygmc from da_qx_yhda
+        union
+        select upper(ygbh)ygbh,upper(ygmc)ygmc from da_ygda
+    </select>
+    <select id="findMoKuaiAuth" parameterType="java.lang.String" resultType="com.springboot.model.MoKuaiAuthJson">
+        declare @C_groupId varchar(10);
+        select @C_groupId=groupId from dbo.da_qx_group_user WHERE yhbh =#{yhbh}
+        select * from (
+				SELECT  'CR' code,'采购入库' name,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ006'
+				UNION ALL
+				SELECT  'CT','采购退库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ090'
+				UNION ALL
+				SELECT  'DC','调拨出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ010'
+				UNION ALL
+				SELECT  'DR','调拨入库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ173'
+				UNION ALL
+				SELECT  'PF','批发出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ141'
+				UNION ALL
+				SELECT  'PT','批发退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ144'
+				UNION ALL
+				SELECT  'LC','连锁出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ123'
+				UNION ALL
+				SELECT  'LT','连锁退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ126'
+				UNION ALL
+				SELECT  'QC','渠道出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ204'
+				UNION ALL
+				SELECT  'QT','渠道退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ207'
+				UNION ALL
+				SELECT  'KP','库存盘存',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ158'
+				UNION ALL
+				SELECT  'KPJZ','库存盘存记账',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ160'
+				UNION ALL
+				SELECT  'SY','库存损益',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ161'
+				UNION ALL
+				SELECT  'POS','POS前台收银' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ526'
+				UNION ALL
+				SELECT  'XS','销货收款',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ555'
+				UNION ALL
+				SELECT  'XF','销货费用' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ556'
+				UNION ALL
+				SELECT  'FK','进货付款' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ560'
+				UNION ALL
+				SELECT  'JF','进货费用' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ561'
+				UNION ALL
+				SELECT  'KHDZD','客户对账单',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ525'
+				UNION ALL
+				SELECT  'GYSDZD','供应商对账单',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ527'
+				UNION ALL
+				SELECT  'SPDA','商品档案',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ030'
+				UNION ALL
+				SELECT  'BMDA','部门档案',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ011'
+				UNION ALL
+				SELECT  'KHDA','客户档案' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ024'
+				UNION ALL
+				SELECT  'GYSDA','供应商档案' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ023'
+				UNION ALL
+				SELECT  'YGDA','员工档案'  ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ036'
+
+                )AAA
+    </select>
+	<select id="findMoKuaiAuth1" parameterType="java.lang.String" resultType="com.springboot.model.MoKuaiAuthJson">
+              declare @C_groupId varchar(10);
+        select @C_groupId=#{groupId}
+        select * from (
+				SELECT  'CR' code,'采购入库' name,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ006'
+				UNION ALL
+				SELECT  'CT','采购退库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ090'
+				UNION ALL
+				SELECT  'DC','调拨出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ010'
+				UNION ALL
+				SELECT  'DR','调拨入库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ173'
+				UNION ALL
+				SELECT  'PF','批发出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ141'
+				UNION ALL
+				SELECT  'PT','批发退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ144'
+				UNION ALL
+				SELECT  'LC','连锁出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ123'
+				UNION ALL
+				SELECT  'LT','连锁退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ126'
+				UNION ALL
+				SELECT  'QC','渠道出库',cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ204'
+				UNION ALL
+				SELECT  'QT','渠道退库',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ207'
+				UNION ALL
+				SELECT  'KP','库存盘存',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ158'
+				UNION ALL
+				SELECT  'KPJZ','库存盘存记账',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ160'
+				UNION ALL
+				SELECT  'SY','库存损益',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ161'
+				UNION ALL
+				SELECT  'POS','POS前台收银' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ526'
+				UNION ALL
+				SELECT  'XS','销货收款',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ555'
+				UNION ALL
+				SELECT  'XF','销货费用' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ556'
+				UNION ALL
+				SELECT  'FK','进货付款' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ560'
+				UNION ALL
+				SELECT  'JF','进货费用' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ561'
+				UNION ALL
+				SELECT  'KHDZD','客户对账单',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ525'
+				UNION ALL
+				SELECT  'GYSDZD','供应商对账单',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ527'
+				UNION ALL
+				SELECT  'SPDA','商品档案',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ030'
+				UNION ALL
+				SELECT  'BMDA','部门档案',cdbh  FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ011'
+				UNION ALL
+				SELECT  'KHDA','客户档案' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ024'
+				UNION ALL
+				SELECT  'GYSDA','供应商档案' ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ023'
+				UNION ALL
+				SELECT  'YGDA','员工档案'  ,cdbh FROM dbo.da_qx_mokuai WHERE yhbh=@C_groupId AND cdbh = 'SJ036'
+
+                )AAA
+    </select>
+	<select id="getGroupIds" resultType="java.lang.String">
+			select groupId from da_qx_group
+    </select>
+	<select id="getGroupUserList" resultType="com.springboot.model.role.GroupUserJson">
+		select * from da_qx_group_user
+    </select>
+	<select id="getList" resultType="com.springboot.model.user.DaQxYhda">
+		select * from da_qx_yhda ygda
+		LEFT JOIN da_bmda bmda ON ygda.bmbh=bmda.bmbh
+		left join da_qx_group_user groupuser on ygda.yhbh=groupuser.yhbh
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.equip.BaseEquipMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.equip.BaseEquip">
+        <id column="id" property="id" />
+        <result column="uuid" property="uuid" />
+        <result column="equip_type" property="equipType" />
+        <result column="equip_manufacturer" property="equipManufacturer" />
+        <result column="user_name" property="userName" />
+        <result column="org_id" property="orgId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="sn" property="sn" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, uuid, equip_type, equip_manufacturer, user_name, org_id, create_time, update_time,sn
+    </sql>
+    <select id="findByUuidAndorgId" parameterType="java.lang.String" resultType="com.springboot.model.equip.BaseEquip">
+        select * from base_equip where uuid = #{uuid} and org_id = #{orgId}
+    </select>
+    <select id="findBySn" parameterType="java.lang.String" resultType="com.springboot.model.equip.BaseEquip">
+        select top 1 * from base_equip where sn = #{sn}
+    </select>
+    <select id="getCountByOrgId" parameterType="java.lang.String" resultType="Integer">
+        select count(1) from base_equip where org_id = #{orgId}
+    </select>
+    <delete id="deleteByOrgId" parameterType="java.lang.String">
+        delete from base_equip
+        <where>
+            <if test="orgId!=null and orgId!=''">and org_id= #{orgId}</if>
+        </where>
+    </delete>
+    <delete id="batchDeleteByIds" parameterType="List">
+        delete from base_equip where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

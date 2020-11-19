@@ -1,0 +1,215 @@
+package com.springboot.web.goods;
+
+
+import com.baomidou.mybatisplus.toolkit.StringUtils;
+import com.springboot.common.RedisUtil;
+import com.springboot.common.RequestUtils;
+import com.springboot.common.SystemConstant;
+import com.springboot.configurer.JSON;
+import com.springboot.core.Result;
+import com.springboot.core.ResultGenerator;
+import com.springboot.model.AddReturnJson;
+import com.springboot.model.goods.DaSpSpDaJson;
+import com.springboot.model.goods.DaSpSpDaMxJson;
+import com.springboot.model.goods.DaSpSpdaMx;
+import com.springboot.model.org.BaseOrg;
+import com.springboot.model.user.DaQxYhda;
+import com.springboot.service.goods.DaSpSpdaMxService;
+import com.springboot.service.org.BaseOrgService;
+import com.springboot.service.system.DaQjCsbService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import sun.misc.Request;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * <p>
+ * 商品商品明细 前端控制器
+ * </p>
+ *
+ * @author zjq
+ * @since 2020-04-21
+ */
+@Controller
+@RequestMapping("/api/daSpSpdaMx")
+@Slf4j
+public class DaSpSpdaMxController {
+
+    @Resource
+    private DaSpSpdaMxService daSpSpdaMxService;
+    @Resource
+    private RedisUtil redisUtil;
+    @Resource
+    private BaseOrgService baseOrgService;
+    @Resource
+    private DaQjCsbService daQjCsbService;
+    @PostMapping(value = "/findByTmbh")
+    public Result findByTmbh(@RequestBody DaSpSpdaMx daSpSpdaMx) {
+        Result result=null;
+        //获取组织id
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getTmbh())){
+            //获取是否启用条码方案状态
+            String  isStartTmFangan=redisUtil.get(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan");
+            if(StringUtils.isEmpty(isStartTmFangan)){
+                isStartTmFangan= daQjCsbService.findIsStartTmFangan(daSpSpdaMx.getSixCode());
+                redisUtil.set(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan",isStartTmFangan);
+                log.info("是否启用条码方案参数是从数据库中获取isStartTmFangan为:"+isStartTmFangan);
+            }
+            log.info("是否启用条码方案参数是从redis中获取isStartTmFangan为:"+isStartTmFangan);
+            DaSpSpDaJson bean= daSpSpdaMxService.newfindByTmbh(daSpSpdaMx.getSixCode(),isStartTmFangan,daSpSpdaMx);
+            if(bean!=null){
+                result= ResultGenerator.genSuccessResult(bean);
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult(ResultGenerator.ID_ERROR);
+            }
+        }else{
+            result= ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+    /*
+    *此接口只针对本地开发测试使用
+    *
+    **/
+    @PostMapping(value = "/newfindByTmbh")
+    public Result newfindByTmbh(@RequestBody DaSpSpdaMx daSpSpdaMx) {
+        Result result=null;
+        //获取组织id
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getTmbh())){
+            //获取是否启用条码方案状态
+            String  isStartTmFangan=redisUtil.get(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan");
+            if(StringUtils.isEmpty(isStartTmFangan)){
+                isStartTmFangan= daQjCsbService.findIsStartTmFangan(daSpSpdaMx.getSixCode());
+                redisUtil.set(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan",isStartTmFangan);
+            }
+            DaSpSpDaJson bean= daSpSpdaMxService.newfindByTmbh(daSpSpdaMx.getSixCode(),isStartTmFangan,daSpSpdaMx);
+            if(bean!=null){
+                result= ResultGenerator.genSuccessResult(bean);
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult(ResultGenerator.ID_ERROR);
+            }
+        }else{
+            result= ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+    /*
+     *盘存单
+     *
+     **/
+    @PostMapping(value = "/findPcByTmbh")
+    public Result findPcByTmbh(@RequestBody DaSpSpdaMx daSpSpdaMx) {
+
+        Result result=null;
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getTmbh())){
+            //获取是否启用条码方案状态
+            String  isStartTmFangan=redisUtil.get(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan");
+            if(StringUtils.isEmpty(isStartTmFangan)){
+                isStartTmFangan= daQjCsbService.findIsStartTmFangan(daSpSpdaMx.getSixCode());
+                redisUtil.set(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan",isStartTmFangan);
+            }
+            DaSpSpDaJson bean= daSpSpdaMxService.findPcByTmbh(daSpSpdaMx.getSixCode(),isStartTmFangan,daSpSpdaMx);
+            if(bean!=null){
+                result= ResultGenerator.genSuccessResult(bean);
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult(ResultGenerator.ID_ERROR);
+            }
+        }else{
+            result= ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+    @PostMapping("/findPicByTmbh")
+    public Result findPicByTmbh(@RequestBody DaSpSpdaMx daSpSpdaMx) {
+        Result result=null;
+        //获取组织id
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getTmbh())){
+            DaQxYhda daYgda = RequestUtils.getRequestUserId();
+            //获取是否启用条码方案状态
+            String  isStartTmFangan=redisUtil.get(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan");
+            if(StringUtils.isEmpty(isStartTmFangan)){
+                isStartTmFangan= daQjCsbService.findIsStartTmFangan(daSpSpdaMx.getSixCode());
+                redisUtil.set(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan",isStartTmFangan);
+            }
+            DaSpSpDaMxJson bean= daSpSpdaMxService.findPicByTmbh(daSpSpdaMx.getSixCode(),daYgda.getYgbh(),isStartTmFangan,daSpSpdaMx);
+            if(bean!=null){
+                result= ResultGenerator.genSuccessResult(bean);
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult(ResultGenerator.ID_ERROR);
+            }
+        }else{
+            result=  ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+    //关联部门查询
+    @PostMapping("/findDepartByTmbh")
+    @JSON(type = DaSpSpDaMxJson.class, filter = "imageUrlList")
+    public Result findDepartByTmbh(@RequestBody DaSpSpdaMx daSpSpdaMx) {
+        Result result=null;
+        //获取组织id
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getTmbh())){
+            DaQxYhda daYgda = RequestUtils.getRequestUserId();
+            //获取是否启用条码方案状态
+            String  isStartTmFangan=redisUtil.get(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan");
+            if(StringUtils.isEmpty(isStartTmFangan)){
+                isStartTmFangan= daQjCsbService.findIsStartTmFangan(daSpSpdaMx.getSixCode());
+                redisUtil.set(daSpSpdaMx.getSixCode(),daSpSpdaMx.getSixCode()+"_isStartTmFangan",isStartTmFangan);
+            }
+            DaSpSpDaMxJson bean= daSpSpdaMxService.findDepartByTmbh(daSpSpdaMx.getSixCode(),daYgda.getYgbh(),isStartTmFangan,daSpSpdaMx);
+            if(bean!=null){
+                result= ResultGenerator.genSuccessResult(bean);
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult(ResultGenerator.ID_ERROR);
+            }
+        }else{
+            result=  ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+    @PostMapping("/uploadPic")
+    public Result uploadPic(@RequestBody DaSpSpdaMx daSpSpdaMx, HttpServletRequest request) {
+        Result result=null;
+        //获取组织id
+        if(StringUtils.isNotEmpty(daSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(daSpSpdaMx.getSpkh())){
+            String token=request.getHeader("token");
+            //获取主机头
+            String orgId=redisUtil.get(SystemConstant.DEFAULT_REDIS_KEY,"orgId_"+daSpSpdaMx.getSixCode());
+            if(StringUtils.isNotEmpty(orgId)){
+                BaseOrg org=baseOrgService.findById("",orgId);
+                if(org!=null){
+                    String hostAddress=org.getHostAddress();
+                    AddReturnJson addReturnJson= daSpSpdaMxService.uploadPic(daSpSpdaMx.getSixCode(),token,daSpSpdaMx,hostAddress);
+                    if(addReturnJson.getFlag()==1){
+                        result= ResultGenerator.genSuccessResult();
+                    }else if(addReturnJson.getFlag()==2){
+                        result= ResultGenerator.genErrorSetMsgErrorResult(addReturnJson.getMsg());
+                    }
+                }
+            }else{
+                result= ResultGenerator.genErrorSetMsgErrorResult("五位码不存在!");
+            }
+        }else{
+            result=  ResultGenerator.genParamsErrorResult();
+        }
+        return result;
+    }
+//    @PostMapping("/deletePic")
+//    public Result deletePic(@RequestBody DaSpSpdaMx DaSpSpdaMx) {
+//        Result result=null;
+//        //获取组织id
+//        if(StringUtils.isNotEmpty(DaSpSpdaMx.getSixCode())&&StringUtils.isNotEmpty(DaSpSpdaMx.getSpkh())&&StringUtils.isNotEmpty(DaSpSpdaMx.getSortid())){
+//            Integer flag= daSpSpdaMxService.deletePic(DaSpSpdaMx.getSixCode(),DaSpSpdaMx);
+//            result= ResultGenerator.genSuccessResult();
+//        }else{
+//            result= ResultGenerator.genParamsErrorResult();
+//        }
+//        return result;
+//    }
+}
+

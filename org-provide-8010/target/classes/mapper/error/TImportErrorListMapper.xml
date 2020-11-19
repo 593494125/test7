@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.error.TImportErrorListMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.error.TImportErrorList">
+        <result column="hanghao" property="hanghao" />
+        <result column="cdbh" property="cdbh" />
+        <result column="msg" property="msg" />
+        <result column="tbflag" property="tbflag" />
+        <result column="bz1" property="bz1" />
+        <result column="bz2" property="bz2" />
+        <result column="xh" property="xh" />
+        <result column="EpcNo" property="epcNo" />
+        <result column="spbh" property="spbh" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.springboot.model.error.TImportErrorList">
+        <result column="msg" property="msg" />
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        hanghao, cdbh, msg, tbflag, bz1, bz2, xh, EpcNo, spbh
+    </sql>
+    <select id="getList" parameterType="java.lang.String" resultMap="BaseResultMap1">
+        select error.msg from t_import_error_list error
+        <where>
+            <if test="tgflag!=null and tgflag!=''">and error.tbflag = #{tgflag}</if>
+        </where>
+    </select>
+</mapper>

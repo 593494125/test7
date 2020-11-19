@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.posparm.YwPosHzMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.posparm.YwPosHz">
+        <id column="jyh" property="jyh" />
+        <result column="bmbh" property="bmbh" />
+        <result column="rq" property="rq" />
+        <result column="skyh" property="skyh" />
+        <result column="sl" property="sl" />
+        <result column="lsje" property="lsje" />
+        <result column="zkje" property="zkje" />
+        <result column="rj" property="rj" />
+        <result column="jqbh" property="jqbh" />
+        <result column="xj" property="xj" />
+        <result column="xyk" property="xyk" />
+        <result column="hyk" property="hyk" />
+        <result column="gwq" property="gwq" />
+        <result column="ng" property="ng" />
+        <result column="ngq" property="ngq" />
+        <result column="yhe" property="yhe" />
+        <result column="dj" property="dj" />
+        <result column="jffs" property="jffs" />
+        <result column="hyh" property="hyh" />
+        <result column="hykh" property="hykh" />
+        <result column="zl" property="zl" />
+        <result column="lydh" property="lydh" />
+        <result column="bzxx" property="bzxx" />
+        <result column="jf" property="jf" />
+        <result column="xgr" property="xgr" />
+        <result column="xgsj" property="xgsj" />
+        <result column="jzr" property="jzr" />
+        <result column="jzsj" property="jzsj" />
+        <result column="jzbz" property="jzbz" />
+        <result column="gwqzfc" property="gwqzfc" />
+        <result column="dyje" property="dyje" />
+        <result column="wzflag" property="wzflag" />
+        <result column="syjf" property="syjf" />
+        <result column="jfje" property="jfje" />
+        <result column="kdsj" property="kdsj" />
+        <result column="lydhlx" property="lydhlx" />
+        <result column="djzhlx" property="djzhlx" />
+        <result column="lsjze" property="lsjze" />
+        <result column="zdyzf3" property="zdyzf3" />
+        <result column="zfqd" property="zfqd" />
+        <result column="zdyzf" property="zdyzf" />
+        <result column="zdyzf1" property="zdyzf1" />
+        <result column="mchtradeno" property="mchtradeno" />
+        <result column="zdyzf4" property="zdyzf4" />
+        <result column="paystaus" property="paystaus" />
+        <result column="payjyh" property="payjyh" />
+        <result column="zdyzf5" property="zdyzf5" />
+        <result column="zdyzf2" property="zdyzf2" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        jyh, bmbh, rq, skyh, sl, lsje, zkje, rj, jqbh, xj, xyk, hyk, gwq, ng, ngq, yhe, dj, jffs, hyh, hykh, zl, lydh, bzxx, jf, xgr, xgsj, jzr, jzsj, jzbz, gwqzfc, dyje, wzflag, syjf, jfje, kdsj, lydhlx, djzhlx, lsjze, zdyzf3, zfqd, zdyzf, zdyzf1, mchtradeno, zdyzf4, paystaus, payjyh, zdyzf5, zdyzf2
+    </sql>
+
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.posparm.YwPosHz">
+        select poshz.jyh,poshz.lydh,poshz.bmbh,bmda.bmmc ,poshz.rq,poshz.zl,poshz.hyh,bmda.lxdh,poshz.skyh,ygda.ygmc as skymc,poshz.bzxx,poshz.sl,poshz.lsje,hyda.xm as hymc,poshz.hykh,poshz.jf,kmx.dqjf ,kmx.dqye ,poshz.xj,poshz.hyk,poshz.zfqd zfqd,poshz.xyk,poshz.syjf,poshz.gwq,poshz.ngq,poshz.yhe,poshz.dj,poshz.zdyzf,poshz.zdyzf1,poshz.zdyzf2,poshz.zdyzf3,poshz.zdyzf4,poshz.zdyzf5,
+
+        case when zfqd='WX' then poshz.ng else 0 end as wx,
+        case when zfqd!='WX' then poshz.ng else 0 end as ali
+
+        from yw_pos_hz poshz
+        LEFT JOIN da_bmda bmda ON poshz.bmbh = bmda.bmbh
+        LEFT JOIN da_ygda ygda ON poshz.skyh = ygda.ygbh
+        LEFT JOIN da_hy_hyda_kmx kmx ON poshz.hykh = kmx.kh
+        LEFT JOIN da_hy_hyda hyda ON poshz.hyh = hyda.hyh
+        <where>
+            <if test="pzh!=null and pzh!=''">and poshz.jyh = #{pzh}</if>
+        </where>
+    </select>
+</mapper>

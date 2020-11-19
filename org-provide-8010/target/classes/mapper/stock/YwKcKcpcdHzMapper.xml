@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.stock.YwKcKcpcdHzMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.stock.YwKcKcpcdHz">
+        <id column="pzh" property="pzh" />
+        <result column="tzbm" property="tzbm" />
+        <result column="czy" property="czy" />
+        <result column="tzrq" property="tzrq" />
+        <result column="sgdj" property="sgdj" />
+        <result column="tzfs" property="tzfs" />
+        <result column="bz" property="bz" />
+        <result column="jzbz" property="jzbz" />
+        <result column="zjsl" property="zjsl" />
+        <!--<result column="sjc" property="sjc" />-->
+        <result column="jzsj" property="jzsj" />
+        <result column="jzr" property="jzr" />
+        <result column="xgr" property="xgr" />
+        <result column="xgsj" property="xgsj" />
+        <result column="zjje" property="zjje" />
+        <result column="xxly" property="xxly" />
+        <result column="lydh" property="lydh" />
+        <result column="kdsj" property="kdsj" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, tzbm, czy, tzrq, sgdj, tzfs, bz, jzbz, zjsl, jzsj, jzr, xgr, xgsj, zjje, xxly, lydh, kdsj
+    </sql>
+    <select id="getList" resultMap="BaseResultMap">
+        select * from (select row_number() over(order by kdsj desc) as rownumber,* from (select * from yw_kc_kcpcd_hz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="yhbh!=null and yhbh!=''">and tzbm in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and kc='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getQueryPage" resultMap="BaseResultMap">
+        select * from (select row_number() over(order by kdsj desc) as rownumber,* from (select * from yw_kc_kcpcd_hz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">and CONVERT(date,tzrq) between #{startTime} and #{endTime}</if>
+            <if test="bmbh!=null and bmbh!=''">and tzbm = #{bmbh}</if>
+            <if test="cgy!=null and cgy!=''">and czy = #{cgy}</if>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+            <if test="sgdj!=null and sgdj!=''">and sgdj = #{sgdj}</if>
+            <if test="yhbh!=null and yhbh!=''">and tzbm in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and kc='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getPzh" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select rkdhz.pzh from yw_kc_kcpcd_hz rkdhz
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="yhbh!=null and yhbh!=''">and tzbm in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and kc='1')</if>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.stock.YwKcKcpcdHz">
+        select rkdhz.sgdj,rkdhz.tzrq,rkdhz.bz,rkdhz.zjsl,rkdhz.zjje,rkdhz.tzfs,ygda.ygmc,rkdhz.tzbm,bmda.bmmc from yw_kc_kcpcd_hz rkdhz
+        LEFT JOIN da_bmda bmda ON rkdhz.tzbm=bmda.bmbh
+        LEFT JOIN da_ygda ygda ON rkdhz.czy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+            <if test="sgdj!=null and sgdj!=''">and sgdj = #{sgdj}</if>
+        </where>
+    </select>
+    <select id="findSyByPzh" parameterType="java.lang.String" resultType="com.springboot.model.stock.YwKcKcpcdHz">
+        select rkdhz.tzbm,rkdhz.tzrq,rkdhz.bz,rkdhz.zjsl,rkdhz.zjje,ygda.ygmc,rkdhz.tzbm,bmda.bmmc from yw_kc_syd_hz rkdhz
+        LEFT JOIN da_bmda bmda ON rkdhz.tzbm=bmda.bmbh
+        LEFT JOIN da_ygda ygda ON rkdhz.czy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+        </where>
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from yw_kc_kctzd_hz
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh= #{pzh}</if>
+        </where>
+    </delete>
+</mapper>

@@ -1,0 +1,46 @@
+//package com.springboot.common;
+//
+//import com.springboot.model.goods.DaSpSpdaMx;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.dao.DataAccessException;
+//import org.springframework.data.redis.connection.RedisConnection;
+//import org.springframework.data.redis.core.RedisCallback;
+//import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.scheduling.annotation.Async;
+//import org.springframework.scheduling.annotation.Scheduled;
+//import org.springframework.stereotype.Component;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//@Component
+//public class ScheduledService {
+//
+//    @Autowired
+//    private RedisUtil redisUtil;
+//    @Autowired
+//    private RedisTemplate redisTemplate;
+//    //批量插入
+//    @Async
+//    @Scheduled(cron = "0 0/30 * * * ?")//每隔1分钟执行一次
+//    public void scheduled(){
+//
+//        List<DaSpSpdaMx> list=new ArrayList<DaSpSpdaMx>();
+//        redisTemplate.executePipelined(new RedisCallback<String>() {
+//            @Override
+//            public String doInRedis(RedisConnection connection) throws DataAccessException {
+//
+//                if(list!=null&&list.size()>0){
+//                    int k=list.size();
+//                    for (int i = 0; i < k; i++) {
+//
+//                        DaSpSpdaMx bean=list.get(i);
+////                        connection.set(redisTemplate.getKeySerializer())
+//                    }
+//                }
+////                list.forEach((key, value) -> connection.set(redisTemplate.getKeySerializer().serialize(key), redisTemplate.getValueSerializer().serialize(value)));
+//                return null;
+//            }
+//        });
+//    }
+//}

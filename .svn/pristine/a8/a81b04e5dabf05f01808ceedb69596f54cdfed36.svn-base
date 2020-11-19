@@ -1,0 +1,30 @@
+package com.springboot.service.impl.version;
+
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.springboot.dao.version.SqlVersionMasterMapper;
+import com.springboot.model.version.SqlVersionMaster;
+import com.springboot.service.version.SqlVersionMasterService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+/**
+ * <p>
+ * A8版本主表 服务实现类
+ * </p>
+ *
+ * @author zjq
+ * @since 2020-10-27
+ */
+@Service
+public class SqlVersionMasterServiceImpl extends ServiceImpl<SqlVersionMasterMapper, SqlVersionMaster> implements SqlVersionMasterService {
+
+
+    @Resource
+    private SqlVersionMasterMapper sqlVersionMasterMapper;
+    @Override
+    public String findA8Version(String sixCode) {
+        String version=sqlVersionMasterMapper.findA8Version();
+        return version;
+    }
+}

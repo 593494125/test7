@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.goods.DaSpSpdaMxMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.goods.DaSpSpdaMx">
+        <id column="spbh" property="spbh" />
+        <result column="spkh" property="spkh" />
+        <result column="spmc" property="spmc" />
+        <result column="tmbh" property="tmbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="ysbh" property="ysbh" />
+        <result column="cmbh" property="cmbh" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="ysmc" property="ysmc" />
+        <result column="cmzbm" property="cmzbm" />
+        <result column="cmbthwz" property="cmbthwz" />
+        <result column="cmdmhwz" property="cmdmhwz" />
+        <result column="cmdmlwz" property="cmdmlwz" />
+        <result column="updateFlag" property="updateFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        spbh, spkh, spmc, tmbh, yslsh, ysbh, cmbh, bxbh, bxmc, ysmc, cmzbm, cmbthwz, cmdmhwz, cmdmlwz, updateFlag, spmx_pfzk, spmx_bzxx, spmx_cmbt, spmx_lshyzk, spmx_gysbh, spmx_jhjg, spmx_spbxzmc, spmx_bz2, spmx_spkw, spmx_spsx3, spmx_spsx3Value, spmx_xgsj, spmx_dpjg, spmx_jypp, spmx_spsx, spmx_sjry, spmx_xgrmc, spmx_spsx2Title, spmx_yw_tybz, spmx_tmfamc, spmx_bz8, spmx_pfjg3, spmx_fhqx, spmx_spmlmc, spmx_spbxz, spmx_spsx2Value, spmx_wdjg, fzspbh, spmx_pfcxj, spmx_qdl, spmx_bz5, spmx_cmbtxx, spmx_gysmc, spmx_ssrq, spmx_spsx1Title, spmx_spsx4Title, spmx_spml, spmx_hplbmc, spmx_xgr, spmx_pfjg1, spmx_bz6, spmx_ksmc, spmx_dbjg, spmx_sfqb, spmx_bz10, spmx_tmfa, spmx_spsx1Value, spmx_spsx1, spmx_jyppmc, spmx_bz3, spmx_bz9, spmx_pfjg4, spmx_zkzxz, spmx_lsjg, spmx_jjzk, spmx_sjrymc, spmx_spsx4, spmx_bz4, spmx_lszk, spmx_jldw, spmx_hplb, spmx_spxb, spmx_spsx4Value, spmx_spnf, spmx_bz7, spmx_spsxmc, spmx_pfjg2, spmx_lshyj, spmx_fztm, spmx_spsx3Title, spmx_bz1, spmx_spjj, spmx_tybz, spmx_spjjmc, spmx_spsx2
+    </sql>
+    <select id="findByTmbh" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaJson">
+        select spmx.spkh,spmx.spbh,spmx.ysbh,spmx.cmbh,spmx.bxbh,spmx.spmc,spmx.cmzbm,spmx.cmdmlwz,spmx.yslsh,spda.dpjg,spda.jhjg,spda.jldw,spda.lsjg,spda.jjzk
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spmx.spkh=spda.spkh
+        <where>
+            <if test="tmbh!=null and tmbh!=''">and tmbh =#{tmbh}</if>
+        </where>
+    </select>
+    <select id="findList" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaJson">
+        select spmx.spkh,spmx.spbh,spmx.ysbh,spmx.cmbh,spmx.bxbh,spmx.spmc,spmx.cmzbm,spmx.cmdmlwz,spmx.yslsh,spda.dpjg,spda.jhjg,spda.jldw,spda.lsjg,spda.jjzk,spda.lszk,spda.lshyj,spda.lshyzk
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spmx.spkh=spda.spkh
+    </select>
+    <select id="findCount" resultType="int">
+        select count(1) from da_sp_spda_mx spmx
+    </select>
+    <select id="findPcPriceByTmbh" resultType="String">
+        select TOP 1 csbh from da_qj_csb where csfl = 'QJFS' AND qybz = '1';
+    </select>
+    <select id="getList" parameterType="java.lang.String"  resultType="com.springboot.model.goods.DaSpSpDaJson">
+        select * from (select row_number() over(order by e.spkh desc) as rownumber,* from (
+        select spmx.tmbh,spmx.spkh,spmx.spbh,spmx.ysbh,spmx.cmbh,spmx.bxbh,spmx.spmc,spmx.cmzbm,spmx.cmdmlwz,spmx.yslsh,spda.dpjg,spda.jhjg,spda.jldw,spda.lsjg,spda.jjzk,spda.lszk,spda.lshyj,spda.lshyzk
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spmx.spkh=spda.spkh ) as e ) temp_row
+        <where>
+            <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+        </where>
+    </select>
+    <select id="findListByTmbh" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaJson">
+        select spmx.spkh,spmx.tmbh,spmx.spbh,spmx.ysbh,spmx.cmbh,spmx.bxbh,spmx.spmc,spmx.cmzbm,spmx.cmdmlwz,spmx.yslsh,spda.dpjg,spda.jhjg,spda.jldw,spda.lsjg,spda.jjzk,spda.lszk,spda.lshyj,spda.lshyzk
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spmx.spkh=spda.spkh
+        <where>
+            <if test="tmbh!=null and tmbh!=''">and tmbh =#{tmbh}</if>
+        </where>
+    </select>
+    <select id="findPicByTmbh" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaMxJson">
+        select spmx.spmc,spda.jldw,spmx.spkh,lbda.lbmc,ppda.ppmc,spda.fztm,spda.spnf,jjda.jjmc,spda.ssrq,spda.lsjg
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spda.spkh=spmx.spkh
+        LEFT JOIN da_sp_lbda lbda ON  lbda.lbbh=spda.hplb
+        LEFT JOIN da_sp_ppda ppda ON  ppda.ppbm=spda.jypp
+        LEFT JOIN da_sp_jjda jjda ON  jjda.jjbm=spda.spjj
+        <where>
+            <if test="tmbh!=null and tmbh!=''">and spmx.tmbh = #{tmbh}</if>
+        </where>
+    </select>
+    <select id="findPicBySpkh" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaMxJson">
+        select distinct * from (select spmx.spmc,spda.jldw,spmx.spkh,lbda.lbmc,ppda.ppmc,spda.fztm,spda.spnf,jjda.jjmc,spda.ssrq,spda.lsjg
+        from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_spda spda ON  spda.spkh=spmx.spkh
+        LEFT JOIN da_sp_lbda lbda ON  lbda.lbbh=spda.hplb
+        LEFT JOIN da_sp_ppda ppda ON  ppda.ppbm=spda.jypp
+        LEFT JOIN da_sp_jjda jjda ON  jjda.jjbm=spda.spjj
+        <where>
+            <if test="tmbh!=null and tmbh!=''">and spmx.spkh = #{tmbh}) e</if>
+        </where>
+    </select>
+    <select id="findDaPicBySpkh" parameterType="java.lang.String" resultType="com.springboot.model.goods.DaSpSpDaMxJson">
+        select spda.ksmc spmc,spda.jldw,spda.spkh,lbda.lbmc,ppda.ppmc,spda.fztm,spda.spnf,jjda.jjmc,spda.ssrq,spda.lsjg
+        from da_sp_spda spda
+        LEFT JOIN da_sp_lbda lbda ON  lbda.lbbh=spda.hplb
+        LEFT JOIN da_sp_ppda ppda ON  ppda.ppbm=spda.jypp
+        LEFT JOIN da_sp_jjda jjda ON  jjda.jjbm=spda.spjj
+        <where>
+            <if test="tmbh!=null and tmbh!=''">and spda.spkh = #{tmbh}</if>
+        </where>
+    </select>
+    <select id="findPicUrl" parameterType="java.lang.String" resultType="com.springboot.model.goods.GoodsPic">
+        select spkh,sortid,picfile,default_disp as defaultDisp from da_sp_pic
+        <where>
+            <if test="spkh!=null and spkh!=''">and spkh =#{spkh}</if>
+        </where>
+    </select>
+    <select id="findSaoSpDaMx" parameterType="java.lang.String" resultType="com.springboot.model.goods.SaoDaSpSpDaJson">
+        select spmx.spkh,spmx.spbh,ysda.ysbh,ysda.ysmc,bxda.bxbh,bxda.bxmc,isnull(kcz.kcsl,'0') as kcsl,isnull(pos.xssl,'0') as xssl,spmx.cmbh as cmbh,spmx.cmzbm as cmzbm,spmx.cmdmlwz as cm from da_sp_spda_mx spmx
+        LEFT JOIN da_sp_ysda ysda ON  ysda.yslsh=spmx.yslsh
+        LEFT JOIN da_sp_bxda bxda ON  bxda.bxbh=spmx.bxbh
+        LEFT JOIN (select spbh,spkh,sum(bqkc)-sum(ycsl) as kcsl from yw_kcz
+        where spkh=#{spkh} and bmbh=(select ssbm from da_ygda ygda  where ygbh=#{ygbh}) group by spbh,spkh) kcz ON  kcz.spbh=spmx.spbh
+        LEFT JOIN (select spbh,spkh,sum(sl) as xssl from VIEW_YW_POS_TZ where spkh=#{spkh} and bmbh=(select ssbm from da_ygda where ygbh=#{ygbh}) group by spbh,spkh) pos ON  pos.spbh=spmx.spbh
+        <where>
+            <if test="spkh!=null and spkh!=''">and spmx.spkh =#{spkh}</if>
+            <if test="qybz!=null and qybz!='' and qybz =1"> order by ysbh,bxbh,cm</if>
+            <if test="qybz!=null and qybz!='' and qybz =0"> order by ysbh,cm</if>
+        </where>
+    </select>
+    <select id="findSaoDepartSpDaMx" parameterType="java.lang.String" resultType="com.springboot.model.goods.SaoDaSpSpDaJson">
+        select kcz.bmbh,bmda.bmmc,kcz.spkh,kcz.spbh,ysda.ysbh,ysda.ysmc,bxda.bxbh, ISNULL(bqkc,0)-ISNULL(ycsl,0) kcsl,bxda.bxmc,spmx.cmzbm,spmx.cmdmlwz AS cm
+        from yw_kcz kcz
+        LEFT JOIN da_sp_ysda ysda ON  ysda.yslsh=kcz.yslsh
+        LEFT JOIN da_sp_bxda bxda ON  bxda.bxbh=kcz.bxbh
+        LEFT JOIN da_bmda bmda ON bmda.bmbh=kcz.bmbh
+        LEFT JOIN da_sp_spda_mx spmx  ON spmx.spbh=kcz.spbh
+        <where>
+            <if test="spkh!=null and spkh!=''">and spmx.spkh =#{spkh} AND  kcz.bmbh in(select bmbh from da_qx_bmqxsz where yhbh = #{ygbh} AND kccx=1) and year=YEAR(GETDATE()) and month=month(GETDATE())</if>
+            <if test="qybz!=null and qybz!='' and qybz =1"> order by ysbh,bxbh,cm,bmbh</if>
+            <if test="qybz!=null and qybz!='' and qybz =0"> order by ysbh,cm,bmbh</if>
+        </where>
+    </select>
+    <select id="findDaSpBxbt" resultType="com.springboot.model.goods.DaSpBxbt">
+        select * from da_sp_bxbt
+    </select>
+</mapper>

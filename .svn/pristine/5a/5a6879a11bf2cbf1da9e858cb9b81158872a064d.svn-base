@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.system.DaQjCsbMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.system.DaQjCsb">
+        <id column="csbh" property="csbh" />
+        <result column="lsh" property="lsh" />
+        <result column="csmc" property="csmc" />
+        <result column="csfl" property="csfl" />
+        <result column="qybz" property="qybz" />
+        <result column="bzxx" property="bzxx" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        lsh, csbh, csmc, csfl, qybz, bzxx
+    </sql>
+    <select id="findBean"  resultType="com.springboot.model.system.DaQjCsb">
+        select TOP 1 lsh,csbh,csmc,csfl,qybz,bzxx from dbo.da_qj_csb
+    </select>
+    <select id="findAll"  resultType="com.springboot.model.system.DaQjCsb">
+        select lsh,csbh,csmc,csfl,qybz,bzxx from dbo.da_qj_csb
+    </select>
+    <select id="findIsStartTmFangan"  resultType="string">
+        SELECT qybz FROM dbo.da_qj_csb WHERE   csfl = 'XTCS' AND  CSBH='isStartTmFangan'
+    </select>
+    <select id="findSystemYsxqybz"  resultType="string">
+        SELECT qybz FROM dbo.da_qj_csb WHERE   csfl = 'xtcs' AND  CSBH='spsfjm'
+    </select>
+    <select id="findByCsfl"  resultType="com.springboot.model.system.DaQjCsb">
+        SELECT * FROM dbo.da_qj_csb WHERE   csfl = 'POS_FKLX'
+    </select>
+    <select id="findMaxLsh"  resultType="java.lang.Integer">
+        SELECT Max(lsh)+1 FROM dbo.da_qj_csb
+    </select>
+    <select id="getBean" parameterType="java.lang.String" resultType="com.springboot.model.system.DaQjCsb">
+        SELECT * FROM dbo.da_qj_csb WHERE csfl = #{csfl} AND csbh=#{csbh}
+    </select>
+    <select id="updateByBean" parameterType="java.lang.String" resultType="java.lang.Integer">
+        update da_qj_csb set bzxx=#{bzxx} WHERE csfl = #{csfl} AND csbh=#{csbh}
+    </select>
+    <insert id="saveBatch" >
+        insert into dbo.da_qj_csb (lsh, csbh, csmc, csfl, qybz, bzxx)
+        values
+        <foreach collection="list" item="bean" index="index" separator=",">
+            (#{bean.lsh},#{bean.csbh},#{bean.csmc},#{bean.csfl},#{bean.qybz},#{bean.bzxx})
+        </foreach>
+    </insert>
+</mapper>

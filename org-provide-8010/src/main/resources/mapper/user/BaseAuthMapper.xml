@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.user.BaseAuthMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.user.BaseAuth">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="state" property="state" />
+        <result column="six_code" property="sixCode" />
+        <result column="org_id" property="orgId" />
+        <result column="effect_start_time" property="effectStartTime" />
+        <result column="effect_end_time" property="effectEndTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, title, state, six_code, org_id, effect_start_time, effect_end_time
+    </sql>
+    <select id="getCountByOrgId" parameterType="java.lang.String" resultType="Integer">
+        select count(1) from base_auth where org_id = #{orgId}
+    </select>
+    <delete id="deleteByOrgId" parameterType="java.lang.String">
+        delete from base_auth
+        <where>
+            <if test="orgId!=null and orgId!=''">and org_id= #{orgId}</if>
+        </where>
+    </delete>
+    <update id="updateA8Bean" parameterType="java.lang.String">
+        DECLARE @SIXCODE VARCHAR(5);
+        SELECT @SIXCODE=#{sixCode}
+        IF NOT  EXISTS (SELECT 1 FROM DBO.DA_QJ_CSB WHERE CSFL='YMT' AND CSBH='SIXCODE')
+        INSERT INTO DA_QJ_CSB(LSH,CSBH,CSMC,CSFL,QYBZ,BZXX) SELECT  (SELECT ISNULL(MAX(LSH),0)+1 FROM DBO.DA_QJ_CSB),'SIXCODE','易码通','YMT','1',@SIXCODE
+        ELSE
+        UPDATE DBO.DA_QJ_CSB SET BZXX=@SIXCODE WHERE CSFL='YMT' AND CSBH='SIXCODE'
+  </update>
+</mapper>

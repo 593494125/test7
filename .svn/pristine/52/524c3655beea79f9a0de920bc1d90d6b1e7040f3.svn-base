@@ -1,0 +1,113 @@
+server.port=8010
+#server.servlet.context-path=/jjy
+spring.aop.proxy-target-class=true
+
+
+
+#mybatis-plus.config-location=classpath:mybatis/mybatiscfg.xml
+mybatis-plus.configuration.map-underscore-to-camel-case: true
+#mybatis-plus.type-aliases-package=com.jjy.modules
+mybatis-plus.mapper-locations=classpath:/mapper/**/*.xml
+
+logging.level.com.springboot.dao=debug
+# 应用程序名称
+spring.application.name=orgProvide
+#spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+#spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#spring.datasource.url=jdbc:mysql://125.76.225.135:3307/a10_cloud?useUnicode=true&characterEncoding=UTF8
+spring.datasource.url=jdbc:sqlserver://www.dashujuwang.com;DatabaseName=APP_ERP
+#spring.datasource.username=radius
+spring.datasource.username=sa
+spring.datasource.password=jjyerp114
+#spring.datasource.password=ds549gGF32fdkk2Ter675wiyi23de5
+#spring.datasource.password=123
+spring.datasource.dbcp2.max-idle=20
+spring.datasource.dbcp2.initial-size=20
+spring.datasource.dbcp2.max-total=20
+spring.datasource.dbcp2.max-wait-millis=60000
+spring.datasource.dbcp2.time-between-eviction-runs-millis=60000
+spring.datasource.dbcp2.soft-min-evictable-idle-time-millis=300000
+spring.datasource.dbcp2.max-open-prepared-statements=20
+
+spring.jpa.show-sql=true
+
+#redis 数据库索引
+spring.redis.database=1
+#spring.redis.database=0
+#redis数据库地址
+spring.redis.host=www.dashujuwang.com
+#spring.redis.host=192.168.1.122
+#redis服务器端口号
+spring.redis.port=6379
+#redis服务器密码
+#spring.redis.password=redisby47105142191
+spring.redis.password=jjy123456
+#spring.redis.password=
+
+# 连接池最大连接数（使用负值表示没有限制）
+spring.redis.jedis.pool.max-active=20
+#连接池最大阻塞等待时间
+spring.redis.jedis.pool.max-wait=10000
+#连接池最大空闲连接
+spring.redis.jedis.pool.max-idle=10
+#连接池最小空闲连接
+spring.redis.jedis.pool.min-idle=10
+
+#连接超时时间
+spring.redis.timeout=10000
+
+#Eureka的配置
+eureka.client.registry-fetch-interval-seconds=30
+
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+eureka.client.service-url.defaultZone=http://127.0.0.1:7001/eureka
+#eureka.client.service-url.defaultZone=http://eureka7001.com:7001/eureka
+#eureka.security.basic.enabled=false
+
+
+eureka.instance.instance-id=orgProvide8010
+eureka.instance.prefer-ip-address=true
+#eureka客户端向服务端发送心跳的时间间隔，单位为秒
+eureka.instance.lease-renewal-interval-in-seconds=1
+#eureka服务端在收到最后一次心跳后等待时间上线，单位为秒
+eureka.instance.lease-expiration-duration-in-seconds=2
+
+#服务器图片地址
+web.address=http://www.dashujuwang.com:1000/Interface/licx/Img.asmx/ErpImg
+
+# HTTP 编码（Http编码属性）
+# HTTP请求和响应的字符集。 如果未明确设置，则添加到“Content-Type”头。
+spring.http.encoding.charset= UTF-8
+# 启用http编码支持
+spring.http.encoding.enabled= true
+# 将编码强制到HTTP请求和响应上配置的字符集
+spring.http.encoding.force= true
+server.tomcat.uri-encoding=UTF-8
+
+
+
+# 加密
+encrypt.aesKey=S9u978Q31NGPGc5H
+encrypt.ivVal=X83yESM9iShLxfwS
+
+#获取第三方access_token时使用
+
+web.appId=0ddaf854c03177c1bb
+web.appSecret=1101a70c9891dc8b198db51bc5f67b89
+#rocketMQ的配置
+#rocketmq.name-server=192.168.1.122:9876
+#rocketmq.producer.group=my-group
+#
+#mq.consumer.group.name=my-consumer-group
+#mq.consumer.topic=test_topic
+#mq.consumer.tag=test_tag
+
+
+
+
+
+
+   

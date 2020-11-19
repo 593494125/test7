@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.department.DaBmdaMapper">
+
+
+    <!-- 通用查询映射结果 BaseBmbhAndBmmcResultMap-->
+    <resultMap id="BaseResultMap" type="com.springboot.model.department.DaBmda">
+        <id column="bmbh" property="bmbh" />
+        <result column="bmmc" property="bmmc" />
+        <result column="sxmc" property="sxmc" />
+        <result column="zkl" property="zkl" />
+        <result column="fzr" property="fzr" />
+        <result column="lxdh" property="lxdh" />
+        <result column="czhm" property="czhm" />
+        <result column="lxdz" property="lxdz" />
+        <result column="bzxx" property="bzxx" />
+        <result column="bmsx" property="bmsx" />
+        <result column="bmlb" property="bmlb" />
+        <result column="dqdm" property="dqdm" />
+        <result column="jjfs" property="jjfs" />
+        <result column="tybz" property="tybz" />
+        <result column="xgrq" property="xgrq" />
+        <result column="mrxj" property="mrxj" />
+        <result column="mryh" property="mryh" />
+        <result column="yxfkc" property="yxfkc" />
+        <result column="ddsccgd" property="ddsccgd" />
+        <result column="crkdsccgd" property="crkdsccgd" />
+        <result column="sfwd" property="sfwd" />
+        <result column="drfqjfs" property="drfqjfs" />
+        <result column="jqdm" property="jqdm" />
+        <result column="jdbh" property="jdbh" />
+        <result column="JP" property="jp" />
+        <result column="sjmj" property="sjmj" />
+        <result column="cb_jg_flag" property="cbJgFlag" />
+        <result column="bmlx" property="bmlx" />
+        <result column="gsbm" property="gsbm" />
+        <result column="ywzg" property="ywzg" />
+        <result column="qy" property="qy" />
+        <result column="jmfs" property="jmfs" />
+    </resultMap>
+    <resultMap id="BaseBmbhAndBmmcResultMap" type="com.springboot.model.department.DaBmdaJson">
+        <id column="bmbh" property="bmbh" />
+        <result column="bmmc" property="bmmc" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        bmbh, bmmc, sxmc, zkl, fzr, lxdh, czhm, lxdz, bzxx, bmsx, bmlb, dqdm, jjfs, tybz, xgrq, mrxj, mryh, yxfkc, ddsccgd, crkdsccgd, sfwd, drfqjfs, jqdm, jdbh, JP, sjmj, cb_jg_flag, bmlx, gsbm, ywzg, qy, jmfs
+    </sql>
+
+    <select id="findCgBmda" parameterType="java.lang.String" resultMap="BaseBmbhAndBmmcResultMap">
+        SELECT bmda.bmbh,bmda.bmmc from da_bmda bmda
+        <where>
+            and bmda.tybz='1'
+           <if test="yhbh!=null and yhbh!=''">and bmda.bmbh in ( SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and cg='1')</if>
+            <!--<if test="yhbh!=null and yhbh!=''">and bmda.bmbh</if>-->
+        </where>
+  </select>
+    <select id="findDbcBmda" parameterType="java.lang.String" resultMap="BaseBmbhAndBmmcResultMap">
+        SELECT bmda.bmbh,bmda.bmmc from da_bmda bmda
+        <where>
+            and bmda.tybz='1'
+            <if test="yhbh!=null and yhbh!=''">and bmda.bmbh in ( SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and dbc='1')</if>
+        </where>
+  </select>
+    <select id="findDbrBmda" parameterType="java.lang.String" resultMap="BaseBmbhAndBmmcResultMap">
+        SELECT bmda.bmbh,bmda.bmmc from da_bmda bmda
+        <where>
+            and bmda.tybz='1'
+            <if test="yhbh!=null and yhbh!=''">and bmda.bmbh in ( SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and db='1')</if>
+        </where>
+  </select>
+    <select id="findPfBmda" parameterType="java.lang.String" resultMap="BaseBmbhAndBmmcResultMap">
+        SELECT bmda.bmbh,bmda.bmmc from da_bmda bmda
+        <where>
+            and bmda.tybz='1'
+            <if test="yhbh!=null and yhbh!=''">and bmda.bmbh in ( SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and pf='1')</if>
+        </where>
+  </select>
+    <select id="findKcBmda" parameterType="java.lang.String" resultMap="BaseBmbhAndBmmcResultMap">
+        SELECT bmda.bmbh,bmda.bmmc from da_bmda bmda
+        <where>
+            and bmda.tybz='1'
+            <if test="yhbh!=null and yhbh!=''">and bmda.bmbh in ( SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and kc='1')</if>
+        </where>
+  </select>
+</mapper>

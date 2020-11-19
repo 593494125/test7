@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/a8-provide-8012/a8-provide-8012.iml" filepath="$PROJECT_DIR$/a8-provide-8012/a8-provide-8012.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api-common/api-common.iml" filepath="$PROJECT_DIR$/api-common/api-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/center-server-5001/center-server-5001.iml" filepath="$PROJECT_DIR$/center-server-5001/center-server-5001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eureka-server7001/eureka-server7001.iml" filepath="$PROJECT_DIR$/eureka-server7001/eureka-server7001.iml" />
+      <module fileurl="file://$PROJECT_DIR$/org-provide-8010/org-provide-8010.iml" filepath="$PROJECT_DIR$/org-provide-8010/org-provide-8010.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/rfidAppService.iml" filepath="$PROJECT_DIR$/.idea/rfidAppService.iml" />
+    </modules>
+  </component>
+</project>

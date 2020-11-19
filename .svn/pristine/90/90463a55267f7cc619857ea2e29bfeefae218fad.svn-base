@@ -1,0 +1,454 @@
+package com.springboot.web;
+
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.springboot.common.CustomeException;
+import com.springboot.common.JBDate;
+import com.springboot.common.RedisClient;
+import com.springboot.common.RedisUtil;
+import com.springboot.core.Result;
+import com.springboot.core.ResultGenerator;
+import com.springboot.jwt.JwtTokenUtil;
+import com.springboot.jwt.SystemDefines;
+import com.springboot.model.goods.DaSpBxda;
+import com.springboot.model.goods.DaSpSpDaJson;
+import com.springboot.model.goods.DaSpYsda;
+import com.springboot.model.tm.FjTmbhJson1;
+import com.springboot.model.user.DaQxYhda;
+import com.springboot.service.user.DaQxYhdaService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+@Controller
+@RequestMapping("/api/a8")
+public class SupplieA8Controller {
+
+    private static Logger log= LoggerFactory.getLogger(SupplieA8Controller.class);
+
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private RedisClient redisClient;
+    @Resource
+    private DaQxYhdaService daQxYhdaService;
+
+    /**
+     * 系统管理员获取token接口
+     * appId（获取Token的ID）
+     * appSecret（获取Token的密码）
+     */
+    @PostMapping("/getToken")
+    public Result getToken(@RequestBody String jsons, HttpServletRequest request) {
+        long start = System.currentTimeMillis();
+        log.info("**********************************************************************************************************开始("+start+")*********************************************************************************************************************");
+        log.info("请求参数:"+jsons);
+        log.info("start=====>"+ JBDate.getNowDate(new Date().getTime()));
+        log.info("当前URL是:======>"+request.getRequestURI());
+        Result result=null;
+//        A8UserJson a8UserJson=null;
+        DaQxYhda newBaseUser=null;
+        //解析jsons获取appId，appSecret
+        if(StringUtils.isNotEmpty(jsons)){
+            JSONObject json = JSONObject.parseObject(jsons);
+            String sixCode=json.getString("sixCode");
+            String ygbh=json.getString("ygbh");
+//            String yhmm=json.getString("yhmm");
+            if(StringUtils.isNotEmpty(sixCode)&&StringUtils.isNotEmpty(ygbh)){
+                //根据用户名获取用户对象
+                String Token = JwtTokenUtil.generateToken(ygbh);
+               try{
+                   newBaseUser = daQxYhdaService.findByName(sixCode, ygbh);
+                   if (newBaseUser != null) {
+                       newBaseUser.setSixCode(sixCode);
+                       String encryptToken = Token;
+                       newBaseUser.setToken(encryptToken);
+                       newBaseUser.setExpiretime(String.valueOf(SystemDefines.JWT_EXPIRATION));
+                       newBaseUser.setYgbh(newBaseUser.getYhbh());
+                       newBaseUser.setYgmc(newBaseUser.getYhmc());
+                       redisUtil.set(sixCode,sixCode+"_system_user_login_"+ygbh.toLowerCase(),com.alibaba.fastjson.JSON.toJSON(newBaseUser).toString());
+                       result= ResultGenerator.genSuccessResult(Token);
+                   } else {
+                       result= ResultGenerator.genErrorSetMsgErrorResult("用户名或密码错误");
+                   }
+               }catch(Exception e){
+                   throw new CustomeException("五位码错误");
+               }
+            }else{
+                result=  ResultGenerator.genErrorSetMsgErrorResult("参数为空!");
+            }
+        }else{
+            result=  ResultGenerator.genErrorSetMsgErrorResult("参数为空!");
+        }
+
+        return result;
+    }
+    /**
+     * state 0:新增或者修改1：删除2：key是否存在3：get操作 4：获取单个或者多个hashMap值5:返回所有值为hashMap格式 6: hashKey是否存在 7：返回所有值为list格式 8:删除所有hashKey 9:redis初始化数据 10:查询多个hashKey的值
+     *hashWay 为0表示使用的是hashMap方式
+     */
+    @PostMapping("/a8Redis")
+    public Result a8Redis(@RequestBody String jsons, HttpServletRequest request) {
+
+        Result result=null;
+        boolean flag=true;
+        String key ="";
+        //解析jsons获取appId，appSecret
+        try {
+            if(StringUtils.isNotEmpty(jsons)){
+                JSONObject json = JSONObject.parseObject(jsons);
+                String sixCode=json.getString("sixCode");
+                String state=json.getString("state");
+                String hashWay=json.getString("hashWay");
+                List<Object> hashKeyList= (List<Object>) json.get("hashKey");
+                JSONArray array=json.getJSONArray("list");
+                //查询的是hashKey所以hashKey必须不能为空
+                if(StringUtils.isNotEmpty(sixCode)&&StringUtils.isNotEmpty(state)&&("4".equals(state)||"6".equals(state))){
+                    if(StringUtils.isEmpty(hashWay)||hashKeyList==null){
+                        return ResultGenerator.genErrorSetMsgErrorResult("hashWay和hashKey不能为空!");
+                    }
+                }
+                if(StringUtils.isNotEmpty(sixCode)&&StringUtils.isNotEmpty(state)&&("0".equals(state)||"1".equals(state)||"2".equals(state)||"6".equals(state)||"8".equals(state)||"9".equals(state))) {
+
+                    if (array != null) {
+                        int k = array.size();
+                        for (int i = 0; i < k; i++) {
+                            JSONObject newjson = array.getJSONObject(i);
+                            key = newjson.getString("key");
+                            String value ="";
+                            Map<String,String> param=null;
+                            if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)&&"9".equals(state)){
+                                param= (Map<String, String>) newjson.get("value");
+                            }else{
+                                 value = newjson.getString("value");
+                            }
+
+                            if (StringUtils.isNotEmpty(key) && key.endsWith("_fj")) {
+                                if ("0".equals(state)) {
+                                    FjTmbhJson1 fjTmbhJson1 = JSONObject.parseObject(value, FjTmbhJson1.class);
+                                    redisClient.set(sixCode,key, fjTmbhJson1);
+                                } else if ("1".equals(state)) {
+                                    redisClient.deleteCache(sixCode,key);
+                                }
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_ysda")) {
+                                if ("0".equals(state)) {
+                                    DaSpYsda daSpYsda = JSONObject.parseObject(value, DaSpYsda.class);
+                                    redisClient.set(sixCode,key, daSpYsda);
+                                } else if ("1".equals(state)) {
+                                    redisClient.deleteCache(sixCode,key);
+                                }
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_bxda")) {
+                                if ("0".equals(state)) {
+                                    DaSpBxda daSpBxda = JSONObject.parseObject(value, DaSpBxda.class);
+                                    redisClient.set(sixCode,key, daSpBxda);
+                                } else if ("1".equals(state)) {
+                                    redisClient.deleteCache(sixCode,key);
+                                }
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_daspmx")) {
+                                if ("0".equals(state)) {
+                                    DaSpSpDaJson daSpSpDaJson = JSONObject.parseObject(value, DaSpSpDaJson.class);
+                                    redisClient.set(sixCode,key, daSpSpDaJson);
+                                } else if ("1".equals(state)) {
+                                    redisClient.deleteCache(sixCode,key);
+                                }
+                            } else if (key.contains("_system_user_login_")) {
+                                if ("0".equals(state)) {
+//                                            DaQxYhda daQxYhda=JSONObject.parseObject(value, DaQxYhda.class);
+                                    //redis存入带密码的key
+                                    redisUtil.set(sixCode,key, value);
+                                    //redis存入不带密码的key
+                                    String newkey = getUserKey(key);
+                                    redisUtil.set(sixCode,newkey, value);
+                                } else if ("1".equals(state)) {
+                                    redisUtil.delete(sixCode,key);
+                                } else if ("2".equals(state)) {
+                                    flag = redisUtil.hasKey(sixCode,key);
+                                }
+                            } else {
+                                if ("0".equals(state)) {
+                                    if(value.startsWith("{")||value.endsWith("}")){
+                                        JSONObject jsonObject=JSONObject.parseObject(value);
+                                    }else if(value.startsWith("[")||value.endsWith("]")){
+                                        JSONArray jsonArray=JSONArray.parseArray(value);
+                                    }else{
+                                        log.info("set的是一个字符串");
+                                    }
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+//                                        String newkey=key+hashKey;
+                                        String newhashKey=key;
+//                                        redisUtil.set(sixCode,newkey, value);
+//                                        "bmda_b001":"{'id':'0','name':'ceshi'}
+//                                        "bmda":"{'b001':'b001'}"
+                                        if(hashKeyList!=null&&hashKeyList.size()>0){
+                                            if(hashKeyList.size()==1){
+                                                String hashKey= (String) hashKeyList.get(0);
+                                                redisUtil.hPut(sixCode,newhashKey,hashKey,value);
+                                            }else{
+                                                return ResultGenerator.genErrorSetMsgErrorResult("新增和修改时hashKey不能有多个值!");
+                                            }
+                                        }else{
+                                            return ResultGenerator.genErrorSetMsgErrorResult("hashKey不能为空!");
+                                        }
+                                    }else{
+                                        redisUtil.set(sixCode,key, value);
+                                    }
+                                } else if ("1".equals(state)) {
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                        String newhashKey=key;
+                                        if(hashKeyList!=null&&hashKeyList.size()>0){
+//                                            String hashKey= (String) hashKeyList.get(0);
+                                            Object[] strArray= hashKeyList.toArray();
+                                            redisUtil.hDelete(sixCode,newhashKey,strArray);
+                                        }else{
+                                            return ResultGenerator.genErrorSetMsgErrorResult("hashKey不能为空!");
+                                        }
+                                    }else{
+                                        redisUtil.delete(sixCode,key);
+                                    }
+                                } else if ("2".equals(state)) {
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                        String newkey=key;
+                                        flag = redisUtil.hasKey(sixCode,newkey);
+                                    }else{
+                                        flag = redisUtil.hasKey(sixCode,key);
+                                    }
+                                }else if ("6".equals(state)){
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                        String newhashKey=key;
+                                        if(hashKeyList!=null&&hashKeyList.size()>0){
+                                            for (Object obj : hashKeyList) {
+                                                String hashKey= (String) obj;
+                                                flag=redisUtil.hExists(sixCode,newhashKey,hashKey);
+                                                if(flag==false){
+                                                    return ResultGenerator.genErrorSetMsgErrorResult("hashKey:"+hashKey+"不存在!");
+                                                }
+                                            }
+                                        }else{
+                                            return ResultGenerator.genErrorSetMsgErrorResult("hashKey不能为空!");
+                                        }
+                                    }
+                                }else if("8".equals(state)){
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                        String newhashKey=key;
+                                        redisUtil.delete(sixCode,newhashKey);
+                                    }
+                                }else if("9".equals(state)){
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                        String newhashKey=key;
+                                        redisUtil.hPutAll(sixCode,newhashKey,param);
+                                    }
+                                }
+                            }
+                            if ("2".equals(state)||"6".equals(state)) {
+                                result = ResultGenerator.genSuccessResult(flag);
+                            } else {
+                                result = ResultGenerator.genSuccessResult();
+                            }
+                        }
+                    }
+                }else if(StringUtils.isNotEmpty(sixCode)&&StringUtils.isNotEmpty(state)&&("3".equals(state)||"4".equals(state)||"5".equals(state)||"7".equals(state)||"10".equals(state))){
+                    if(array!=null){
+                        int k=array.size();
+                        for (int i = 0; i < k; i++) {
+                            JSONObject newjson=array.getJSONObject(i);
+                            key=newjson.getString("key");
+                            if (StringUtils.isNotEmpty(key) && key.endsWith("_fj")) {
+                                FjTmbhJson1 redisfjTmbhJson=redisClient.get(sixCode,key,FjTmbhJson1.class);
+                                result=ResultGenerator.genSuccessResult(redisfjTmbhJson);
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_ysda")) {
+                                DaSpYsda daSpYsda=redisClient.get(sixCode,key,DaSpYsda.class);
+                                result=ResultGenerator.genSuccessResult(daSpYsda);
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_bxda")) {
+                                DaSpBxda daSpBxda=redisClient.get(sixCode,key,DaSpBxda.class);
+                                result=ResultGenerator.genSuccessResult(daSpBxda);
+                            } else if (StringUtils.isNotEmpty(key) && key.endsWith("_daspmx")) {
+                                DaSpSpDaJson daSpSpDaJson=redisClient.get(sixCode,key,DaSpSpDaJson.class);
+                                result=ResultGenerator.genSuccessResult(daSpSpDaJson);
+                            }else{
+                                String value="";
+                                Object hashValue=null;
+                                Map<Object, Object> hashParam=null;
+                                List<Object> list=null;
+                                //获取组织id
+                                if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)){
+                                    String newhashKey=key;
+                                    if(StringUtils.isNotEmpty(state)&&"4".equals(state)){//获取hashMap单个值操作
+                                        //判断是查询一个值还是多个制定的值
+                                        if(hashKeyList!=null&&hashKeyList.size()>0){
+                                            if(hashKeyList.size()==1){
+                                                String hashKey= (String) hashKeyList.get(0);
+                                                hashValue= redisUtil.hGet(sixCode,newhashKey,hashKey);
+                                            }else if(hashKeyList.size()>1){
+                                                list=redisUtil.hMultiGet(sixCode,newhashKey,hashKeyList);
+                                            }
+                                        }else{
+                                            return ResultGenerator.genErrorSetMsgErrorResult("hashKey不能为空!");
+                                        }
+                                        if(hashValue!=null) {
+                                            result = ResultGenerator.genSuccessResult(hashValue);
+                                        }else if(list!=null&&list.size()>0){
+                                            result = ResultGenerator.genSuccessResult(list);
+                                        }else{
+                                            result=  ResultGenerator.genErrorSetMsgErrorResult("单个或多个hashKey对应的value值为空!");
+                                        }
+                                    }else if(StringUtils.isNotEmpty(state)&&"5".equals(state)){//获取hashMap所有值操作
+                                        hashParam=redisUtil.hGetAll(sixCode,newhashKey);
+                                        if(hashParam!=null){
+                                            result=ResultGenerator.genSuccessResult(hashParam);
+                                        }else{
+                                            result=  ResultGenerator.genErrorSetMsgErrorResult("所有hashKey对应的value值为空!");
+                                        }
+                                    }else if(StringUtils.isNotEmpty(state)&&"7".equals(state)){//获取list所有值操作
+                                        list=redisUtil.hValues(sixCode,newhashKey);
+                                        if(list!=null){
+                                            result=ResultGenerator.genSuccessResult(list);
+                                        }else{
+                                            result=  ResultGenerator.genErrorSetMsgErrorResult("所有hashKey对应的value值为空!");
+                                        }
+                                    }else{//通过普通方式获取value
+                                       return ResultGenerator.genErrorSetMsgErrorResult("hashWay有值时state状态不能为3!");
+                                    }
+                                }else{
+                                    try{
+                                        value=redisUtil.get(sixCode,key);
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                        String newhashKey=key;
+                                        hashParam=redisUtil.hGetAll(sixCode,newhashKey);
+                                        if(hashParam!=null){
+                                            return ResultGenerator.genSuccessResult(hashParam);
+                                        }else{
+                                            return ResultGenerator.genErrorSetMsgErrorResult("所有hashKey对应的value值为空!");
+                                        }
+                                    }
+                                }
+
+                                if(StringUtils.isNotEmpty(value)){
+                                    if(value.startsWith("{")||value.endsWith("}")){
+                                        JSONObject jsonObject=JSONObject.parseObject(value);
+                                        result=ResultGenerator.genSuccessResult(jsonObject);
+                                    }else if(value.startsWith("[")||value.endsWith("]")){
+                                        JSONArray jsonArray=JSONArray.parseArray(value);
+                                        result=ResultGenerator.genSuccessResult(jsonArray);
+                                    }else{
+                                        result=ResultGenerator.genSuccessResult(value);
+                                    }
+                                }else{
+                                    if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)&&StringUtils.isNotEmpty(state)&&"4".equals(state)) {
+                                        String newhashKey = key;
+
+                                        if(hashKeyList!=null&&hashKeyList.size()>0){
+                                            if(hashKeyList.size()==1){
+                                                String hashKey= (String) hashKeyList.get(0);
+                                                if (!redisUtil.hExists(sixCode, newhashKey, hashKey)) {
+                                                    result = ResultGenerator.genErrorSetMsgErrorResult("hashKey不存在!");
+                                                }
+                                            }else if(hashKeyList.size()>1){
+                                                for (Object obj : hashKeyList) {
+                                                    String newobj=obj.toString();
+                                                    if (!redisUtil.hExists(sixCode, newhashKey, newobj)) {
+                                                        result = ResultGenerator.genErrorSetMsgErrorResult("hashKey:"+newobj+"不存在!");
+                                                    }
+                                                }
+                                            }
+                                        }else{
+                                            result = ResultGenerator.genErrorSetMsgErrorResult("hashKey不能为空!");
+                                        }
+                                    }else if(StringUtils.isNotEmpty(hashWay)&&"0".equals(hashWay)&&StringUtils.isNotEmpty(state)&&("5".equals(state)||"7".equals(state))){
+
+                                    }else{
+                                        if(redisUtil.hasKey(sixCode,key)){
+                                            result=  ResultGenerator.genErrorSetMsgErrorResult("key对应的value值为空!");
+                                        }else{
+                                            result=  ResultGenerator.genErrorSetMsgErrorResult("key不存在!");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    result=  ResultGenerator.genErrorSetMsgErrorResult("五位码为空或者state参数为空!");
+                }
+
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            result=  ResultGenerator.genErrorSetMsgErrorResult(key+"写入缓存失败或者JSON格式不对!");
+        }
+        return result;
+    }
+
+    public String getUserKey(String key){
+        Pattern pattern = Pattern.compile("_");
+        Matcher findMatcher = pattern.matcher(key);
+        int number = 0;
+        while(findMatcher.find()) {
+            number++;
+            if(number == 5){//当“a”第二次出现时停止
+                break;
+            }
+        }
+        int end = findMatcher.start();//“A”第二次出现的位置
+        log.info("'_'第五次出现的位置是："+end);
+        String substring = key.substring(0, end);
+        log.info(substring);
+        return substring;
+    }
+//    @PostMapping("/inita8Data")
+//    public Result inita8Data(@RequestBody A8CommonBean bean) {
+//
+//        //获取五位码
+//        Result result=null;
+//        if(bean!=null) {
+//            String sixCode = bean.getSixCode();
+//            if(StringUtils.isNotEmpty(sixCode)){
+//                //从redis中获取同步状态
+//                try{
+//                    initA8Data(sixCode,bean.getKey(),bean.getMap());
+//                }catch(Exception e){
+//                    log.error(e.getMessage(),e);
+//                }
+//                result= ResultGenerator.genSuccessResult();
+//            }else{
+//                result= ResultGenerator.genErrorSetMsgErrorResult("五位码为空!");
+//            }
+//        }else{
+//            result= ResultGenerator.genParamsErrorResult();
+//        }
+//
+//        return result;
+//    }
+    public void initA8Data(String sixCode,String key,Map<String,String> map){
+        //缓存商品档案
+        redisUtil.hPutAll(sixCode,key,map);
+
+    }
+    @PostMapping("/setRedis")
+    public Result setRedis() {
+        long start = System.currentTimeMillis();
+        log.info("start=====>"+ JBDate.getNowDate(new Date().getTime()));
+        Result result=null;
+            //放入redis缓存中
+
+        result=ResultGenerator.genSuccessResult();
+        long end = System.currentTimeMillis();
+        log.info("完成总任务，耗时：" + (end - start) + "毫秒");
+        return result;
+    }
+
+}

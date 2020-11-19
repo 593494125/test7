@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.purchase.YwCgRkdmxMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.purchase.YwCgRkdmx">
+        <id column="pzh" property="pzh" />
+        <result column="mxdh" property="mxdh" />
+        <result column="spkh" property="spkh" />
+        <result column="ksmc" property="ksmc" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="ysmc" property="ysmc" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="jldw" property="jldw" />
+        <result column="jj" property="jj" />
+        <result column="lsj" property="lsj" />
+        <result column="dpj" property="dpj" />
+        <result column="zkl" property="zkl" />
+        <result column="hbzxx" property="hbzxx" />
+        <result column="hjhrq" property="hjhrq" />
+        <result column="cm1" property="cm1" />
+        <result column="cm2" property="cm2" />
+        <result column="cm3" property="cm3" />
+        <result column="cm4" property="cm4" />
+        <result column="cm5" property="cm5" />
+        <result column="cm6" property="cm6" />
+        <result column="cm7" property="cm7" />
+        <result column="cm8" property="cm8" />
+        <result column="cm9" property="cm9" />
+        <result column="cm10" property="cm10" />
+        <result column="cm11" property="cm11" />
+        <result column="cm12" property="cm12" />
+        <result column="cm13" property="cm13" />
+        <result column="cm14" property="cm14" />
+        <result column="cm15" property="cm15" />
+        <result column="cm16" property="cm16" />
+        <result column="cm17" property="cm17" />
+        <result column="cm18" property="cm18" />
+        <result column="cm19" property="cm19" />
+        <result column="cm20" property="cm20" />
+        <result column="cm21" property="cm21" />
+        <result column="cm22" property="cm22" />
+        <result column="cm23" property="cm23" />
+        <result column="cm24" property="cm24" />
+        <result column="cm25" property="cm25" />
+        <result column="cm26" property="cm26" />
+        <result column="cm27" property="cm27" />
+        <result column="cm28" property="cm28" />
+        <result column="cm29" property="cm29" />
+        <result column="cm30" property="cm30" />
+        <result column="cm31" property="cm31" />
+        <result column="cm32" property="cm32" />
+        <result column="cm33" property="cm33" />
+        <result column="cm34" property="cm34" />
+        <result column="cm35" property="cm35" />
+        <result column="hjjze" property="hjjze" />
+        <result column="hgys" property="hgys" />
+        <result column="hgysmc" property="hgysmc" />
+        <result column="rkfs" property="rkfs" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.springboot.model.purchase.YwCgRkdmxJson">
+        <id column="pzh" property="pzh" />
+        <result column="mxdh" property="mxdh" />
+        <result column="spkh" property="spkh" />
+        <result column="spbh" property="spbh" />
+        <result column="ksmc" property="ksmc" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="cmzlwz" property="cmzlwz" />
+        <result column="ysmc" property="ysmc" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="jldw" property="jldw" />
+        <result column="jj" property="jj" />
+        <result column="lsj" property="lsj" />
+        <result column="dpj" property="dpj" />
+        <result column="zkl" property="zkl" />
+        <result column="sl" property="sl" />
+        <result column="cm" property="cm" />
+        <result column="hjhrq" property="hjhrq" />
+
+        <result column="hjjze" property="hjjze" />
+        <result column="tmbh" property="tmbh" />
+        <result column="cmbh" property="cmbh" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, mxdh, spkh, ksmc, cmzbh, ysmc, bxbh, bxmc, ysbh, yslsh, jldw, jj, lsj, dpj, zkl, hbzxx, hjhrq, cm1, cm2, cm3, cm4, cm5, cm6, cm7, cm8, cm9, cm10, cm11, cm12, cm13, cm14, cm15, cm16, cm17, cm18, cm19, cm20, cm21, cm22, cm23, cm24, cm25, cm26, cm27, cm28, cm29, cm30, cm31, cm32, cm33, cm34, cm35, hjjze, hgys, hgysmc, rkfs
+    </sql>
+    <select id="getList" resultMap="BaseResultMap1">
+        select pzh,mxdh,spkh,ksmc,cmzbh,ysmc,bxbh,bxmc,ysbh,yslsh,jldw,ISNULL(jj,0)jj,ISNULL(lsj,0)lsj,ISNULL(dpj,0)dpj,zkl,sl,cm,hjjze
+            from (select row_number() over(order by mxdh desc) as rownumber,* from (select pzh,mxdh,spkh,ksmc,cmzbh,ysmc,bxbh,bxmc,ysbh,yslsh,jldw,jj,lsj,dpj,zkl,sl,cm,hjjze from yw_cg_rkdmx  UNPIVOT (sl FOR cm IN(cm1,cm2,cm3,cm4,cm5,cm6,cm7,cm8,cm9,cm10,cm11,cm12,cm13,cm14,cm15,cm16,cm17,cm18,cm19,cm20,cm21,cm22,cm23,cm24,cm25,cm26,cm27,cm28,cm29,cm30,cm31,cm32,cm33,cm34,cm35)
+            ) AS p
+
+        <where>
+            and ISNULL(sl,0) != 0
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}) as e ) temp_row</if>
+          <where>
+            <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+          </where>
+        </where>
+    </select>
+    <select id="selectZxList" resultMap="BaseResultMap1">
+
+        select   tz.pzh,mxdh,tz.spkh,spda.ksmc,cmzbh,ysda.ysmc,tz.bxbh,bxda.bxmc,tz.ysbh,tz.yslsh,jldw,pic.img,tz.spbh,convert(decimal(30,2),jj) jj,convert(decimal(30,2),lsj)lsj,convert(decimal(30,2),dpj)dpj,convert(decimal(30,2),zkl)zkl,convert(decimal(30,0),tz.sl)sl,spmx.cmbh,spmx.cmdmlwz cm,convert(decimal(30,2),hjjze)hjjze,spmx.tmbh
+        from yw_cg_cgrkdtz tz left join da_sp_spda  spda on tz.spkh=spda.spkh
+        left join da_sp_ysda  ysda on tz.yslsh=ysda.yslsh
+        left join da_sp_bxda  bxda on tz.bxbh=bxda.bxbh
+        left join da_sp_spda_mx spmx on tz.spbh=spmx.spbh
+        LEFT JOIN ( SELECT  p.spkh ,
+        p.default_disp img
+        FROM    dbo.da_sp_pic p ,
+        ( SELECT    spkh ,
+        MIN(pxxh) pxxh
+        FROM      dbo.da_sp_pic
+        GROUP BY  spkh
+        ) p1
+        WHERE   p.spkh = p1.spkh
+        AND p.pxxh = p1.pxxh
+        ) pic ON spda.spkh = pic.spkh
+        <where>
+            <if test="pzh!=null and pzh!=''">and tz.pzh = #{pzh}</if>
+        </where>
+        order by tz.spkh,tz.ysbh,tz.bxbh,convert(int,substring(spmx.cmdmlwz,3,2))
+    </select>
+    <select id="selectYsHzList" resultMap="BaseResultMap1">
+
+        select   tz.pzh,tz.spkh+tz.yslsh ysspkh,mxdh,tz.spkh,spda.ksmc,cmzbh,ysda.ysmc,tz.bxbh,bxda.bxmc,tz.ysbh,tz.yslsh,jldw,pic.img,tz.spbh,convert(decimal(30,2),jj) jj,convert(decimal(30,2),lsj)lsj,convert(decimal(30,2),dpj)dpj,convert(decimal(30,2),zkl)zkl,convert(decimal(30,0),tz.sl)sl,spmx.cmbh,spmx.cmdmlwz cm,convert(decimal(30,2),hjjze)hjjze,spmx.tmbh
+        from yw_cg_cgrkdtz tz left join da_sp_spda  spda on tz.spkh=spda.spkh
+        left join da_sp_ysda  ysda on tz.yslsh=ysda.yslsh
+        left join da_sp_bxda  bxda on tz.bxbh=bxda.bxbh
+        left join da_sp_spda_mx spmx on tz.spbh=spmx.spbh
+        LEFT JOIN ( SELECT  p.spkh ,
+        p.default_disp img
+        FROM    dbo.da_sp_pic p ,
+        ( SELECT    spkh ,
+        MIN(pxxh) pxxh
+        FROM      dbo.da_sp_pic
+        GROUP BY  spkh
+        ) p1
+        WHERE   p.spkh = p1.spkh
+        AND p.pxxh = p1.pxxh
+        ) pic ON spda.spkh = pic.spkh
+        <where>
+            <if test="pzh!=null and pzh!=''">and tz.pzh = #{pzh}</if>
+        </where>
+        order by tz.spkh+tz.yslsh
+    </select>
+    <delete id="batchDeleteByPzh" parameterType="java.lang.String">
+        delete from yw_cg_rkdmx
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh= #{pzh}</if>
+        </where>
+    </delete>
+</mapper>

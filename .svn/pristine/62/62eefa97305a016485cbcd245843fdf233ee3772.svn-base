@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.bluetooth.BlueToothExtMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.bluetooth.BlueToothExt">
+        <id column="id" property="id" />
+        <result column="ppid" property="ppid" />
+        <result column="mac" property="mac" />
+        <result column="cgy" property="cgy" />
+        <result column="sl" property="sl" />
+        <result column="qybz" property="qybz" />
+        <result column="user_id" property="userId" />
+        <result column="qy_time" property="qyTime" />
+        <result column="device_name" property="deviceName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="sn" property="sn" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, ppid, mac, cgy, sl, qybz, user_id, qy_time, device_name,create_time,update_time,sn
+    </sql>
+    <select id="findByMac" parameterType="java.lang.String" resultType="com.springboot.model.bluetooth.BlueToothExt">
+        select id,mac,sn from blue_tooth_ext
+        <where>
+            <if test="mac!=null and mac!=''">and mac= #{mac}</if>
+        </where>
+    </select>
+    <insert id="insertBatch" >
+        insert into blue_tooth_ext (id, ppid, mac, cgy, sl, qybz, user_id, qy_time, device_name,create_time,update_time,sn)
+        values
+        <foreach collection="list" item="bean" index="index" separator=",">
+            (#{bean.id},#{bean.ppid},#{bean.mac},#{bean.cgy},#{bean.sl},#{bean.qybz},#{bean.userId},#{bean.qyTime},#{bean.deviceName},#{bean.createTime},#{bean.updateTime},#{bean.sn})
+        </foreach>
+    </insert>
+</mapper>

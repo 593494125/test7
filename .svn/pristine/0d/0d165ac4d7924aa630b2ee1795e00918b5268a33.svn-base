@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.wholesale.YwPfRkdhzMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.wholesale.YwPfRkdhz">
+        <id column="pzh" property="pzh" />
+        <result column="kdrq" property="kdrq" />
+        <result column="bmbh" property="bmbh" />
+        <result column="khbh" property="khbh" />
+        <result column="khdh" property="khdh" />
+        <result column="zjsl" property="zjsl" />
+        <result column="zjje" property="zjje" />
+        <result column="cgy" property="cgy" />
+        <result column="kdr" property="kdr" />
+        <result column="cgfs" property="cgfs" />
+        <result column="xxly" property="xxly" />
+        <result column="lydh" property="lydh" />
+        <result column="djlx" property="djlx" />
+        <result column="jzbz" property="jzbz" />
+        <result column="bzxx" property="bzxx" />
+        <result column="fhlx" property="fhlx" />
+        <result column="fklx" property="fklx" />
+        <!--<result column="sjc" property="sjc" />-->
+        <result column="xgr" property="xgr" />
+        <result column="xgsj" property="xgsj" />
+        <result column="jzr" property="jzr" />
+        <result column="jzsj" property="jzsj" />
+        <result column="sdjy" property="sdjy" />
+        <result column="skfs" property="skfs" />
+        <result column="bdsk" property="bdsk" />
+        <result column="dfyf" property="dfyf" />
+        <result column="bdyh" property="bdyh" />
+        <result column="ljqk" property="ljqk" />
+        <result column="zh" property="zh" />
+        <result column="khsdjy" property="khsdjy" />
+        <result column="khljqk" property="khljqk" />
+        <result column="newsdjy" property="newsdjy" />
+        <result column="newbdsk" property="newbdsk" />
+        <result column="newdfyf" property="newdfyf" />
+        <result column="newbdyh" property="newbdyh" />
+        <result column="newljqk" property="newljqk" />
+        <result column="newkhsdjy" property="newkhsdjy" />
+        <result column="newkhljqk" property="newkhljqk" />
+        <result column="kdsj" property="kdsj" />
+        <result column="lsjze" property="lsjze" />
+        <result column="jsr" property="jsr" />
+        <result column="jzbz_cg" property="jzbzCg" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, kdrq, bmbh, khbh, khdh, zjsl, zjje, cgy, kdr, cgfs, xxly, lydh, djlx, jzbz, bzxx, fhlx, fklx, xgr, xgsj, jzr, jzsj, sdjy, skfs, bdsk, dfyf, bdyh, ljqk, zh, khsdjy, khljqk, newsdjy, newbdsk, newdfyf, newbdyh, newljqk, newkhsdjy, newkhljqk, kdsj, lsjze, jsr, jzbz_cg
+    </sql>
+    <select id="getList" resultMap="BaseResultMap">
+        select pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from (select row_number() over(order by kdsj desc) as rownumber,pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from (select pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from yw_pf_rkdhz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and pf='1')and khbh in(SELECT khbh FROM da_qx_khda WHERE yhbh = #{yhbh} and bz3='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getQueryPage" resultMap="BaseResultMap">
+        select pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from (select row_number() over(order by kdsj desc) as rownumber,pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from (select pzh,kdrq,bmbh,khbh,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,skfs,lsjze,kdsj from yw_pf_rkdhz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">and CONVERT(date,kdrq) between #{startTime} and #{endTime}</if>
+            <if test="bmbh!=null and bmbh!=''">and bmbh = #{bmbh}</if>
+            <if test="khbh!=null and khbh!=''">and khbh = #{khbh}</if>
+            <if test="cgy!=null and cgy!=''">and cgy = #{cgy}</if>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and pf='1')and khbh in(SELECT khbh FROM da_qx_khda WHERE yhbh = #{yhbh} and bz3='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getPzh" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select rkdhz.pzh from yw_pf_rkdhz rkdhz
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and pf='1')and khbh in(SELECT khbh FROM da_qx_khda WHERE yhbh = #{yhbh} and bz3='1')</if>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.wholesale.YwPfRkdhz">
+        declare @C_JQDBM varchar(2)
+        if exists( select 1 from da_qj_csb where csfl='cw_jqdbm' and csbh='jqdbm' and qybz='1')
+        select @C_JQDBM='BM'
+        else
+        select @C_JQDBM=''
+        SELECT  pfdhz.pzh ,
+        pfdhz.kdrq ,
+        pfdhz.bzxx ,
+        pfdhz.zjsl ,
+        pfdhz.zjje ,
+        pfdhz.bdsk ,
+        pfdhz.bdyh ,
+        pfdhz.cgfs ,
+        pfdhz.lydh ,
+        pfdhz.bmbh ,
+        dbo.F_GET_NAME_BY_BH(pfdhz.zh,'cw_xianjin_yinhang_zh')zh,
+        ygda.ygmc ,
+        bmda.bmmc ,
+        khda.khmc ,
+        khda.sjhm ,
+        CASE WHEN @C_JQDBM = 'BM'
+        THEN CONVERT(DECIMAL(30, 2), cw.bmsdjy)
+        ELSE CONVERT(DECIMAL(30, 2), cw.sdjy)
+        END sdjy,
+        CASE WHEN @C_JQDBM = 'BM'
+        THEN CONVERT(DECIMAL(30, 2), cw.bmljye)
+        ELSE CONVERT(DECIMAL(30, 2), cw.ljye)
+        END ljqk,
+        pfdhz.dfyf,
+        pfdhz.bdyh,
+        dbo.F_GET_NAME_BY_BH(pfdhz.skfs,'skfs')skfs,
+        cw.bcyshk
+        FROM    yw_pf_rkdhz pfdhz
+        LEFT JOIN da_bmda bmda ON pfdhz.bmbh = bmda.bmbh
+        LEFT JOIN dbo.da_khda khda ON pfdhz.khbh = khda.khbh
+        LEFT JOIN da_ygda ygda ON pfdhz.cgy = ygda.ygbh
+        LEFT JOIN dbo.cw_new_xhskd cw ON pfdhz.pzh = cw.lydh
+--         select rkdhz.pzh,rkdhz.kdrq,rkdhz.bzxx,rkdhz.zjsl,rkdhz.zjje,rkdhz.fhlx,rkdhz.zh,rkdhz.skfs,ygda.ygmc,bmda.bmmc,khda.khmc,khda.sjhm from yw_pf_rkdhz rkdhz
+--         LEFT JOIN da_bmda bmda ON rkdhz.bmbh=bmda.bmbh
+--         LEFT JOIN da_khda khda ON rkdhz.khbh=khda.khbh
+--         LEFT JOIN da_ygda ygda ON rkdhz.cgy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pfdhz.pzh = #{pzh}</if>
+        </where>
+    </select>
+    <select id="findLsByPzh" parameterType="java.lang.String" resultType="com.springboot.model.wholesale.YwPfRkdhz">
+        declare @C_JQDBM varchar(2)
+        if exists( select 1 from da_qj_csb where csfl='cw_jqdbm' and csbh='jqdbm' and qybz='1')
+        select @C_JQDBM='BM'
+        else
+        select @C_JQDBM=''
+        SELECT  pfdhz.pzh ,
+        pfdhz.kdrq ,
+        pfdhz.bzxx ,
+        pfdhz.zjsl ,
+        pfdhz.zjje ,
+        pfdhz.bdsk ,
+        pfdhz.bdyh ,
+        pfdhz.cgfs ,
+        pfdhz.lydh ,
+        pfdhz.bmbh ,
+        dbo.F_GET_NAME_BY_BH(pfdhz.zh,'cw_xianjin_yinhang_zh')zh,
+        ygda.ygmc ,
+        bmda.bmmc ,
+        khda.khmc ,
+        khda.sjhm ,
+        CASE WHEN @C_JQDBM = 'BM'
+        THEN CONVERT(DECIMAL(30, 2), cw.bmsdjy)
+        ELSE CONVERT(DECIMAL(30, 2), cw.sdjy)
+        END sdjy,
+        CASE WHEN @C_JQDBM = 'BM'
+        THEN CONVERT(DECIMAL(30, 2), cw.bmljye)
+        ELSE CONVERT(DECIMAL(30, 2), cw.ljye)
+        END ljqk,
+        pfdhz.dfyf,
+        pfdhz.bdyh,
+        dbo.F_GET_NAME_BY_BH(pfdhz.skfs,'skfs')skfs,
+        cw.bcyshk
+        FROM yw_ls_rkdhz pfdhz
+        LEFT JOIN da_bmda bmda ON pfdhz.bmbh = bmda.bmbh
+        LEFT JOIN dbo.da_khda khda ON pfdhz.khbh = khda.khbh
+        LEFT JOIN da_ygda ygda ON pfdhz.cgy = ygda.ygbh
+        LEFT JOIN dbo.cw_new_xhskd cw ON pfdhz.pzh = cw.lydh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pfdhz.pzh = #{pzh}</if>
+        </where>
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from yw_pf_rkdhz
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh= #{pzh}</if>
+        </where>
+    </delete>
+</mapper>

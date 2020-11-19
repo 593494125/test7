@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.finance.CwNewJhfkdMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.finance.CwNewJhfkd">
+        <id column="pzh" property="pzh" />
+        <result column="rq" property="rq" />
+        <result column="fkfs" property="fkfs" />
+        <result column="bmbh" property="bmbh" />
+        <result column="gysbh" property="gysbh" />
+        <result column="lydh" property="lydh" />
+        <result column="zhbz" property="zhbz" />
+        <result column="fyzh" property="fyzh" />
+        <result column="fklx" property="fklx" />
+        <result column="bzxx" property="bzxx" />
+        <result column="ywy" property="ywy" />
+        <result column="zdr" property="zdr" />
+        <result column="sdjy" property="sdjy" />
+        <result column="bcyfhk" property="bcyfhk" />
+        <result column="dfyf" property="dfyf" />
+        <result column="bcfk" property="bcfk" />
+        <result column="yhje" property="yhje" />
+        <result column="dj" property="dj" />
+        <result column="bzj" property="bzj" />
+        <result column="ljye" property="ljye" />
+        <result column="jzbz" property="jzbz" />
+        <result column="jzsj" property="jzsj" />
+        <result column="jzr" property="jzr" />
+        <result column="sl" property="sl" />
+        <result column="bmsdjy" property="bmsdjy" />
+        <result column="bmljye" property="bmljye" />
+        <result column="kdsj" property="kdsj" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, rq, fkfs, bmbh, gysbh, lydh, zhbz, fyzh, fklx, bzxx, ywy, zdr, sdjy, bcyfhk, dfyf, bcfk, yhje, dj, bzj, ljye, jzbz, jzsj, jzr, sl, bmsdjy, bmljye, kdsj
+    </sql>
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.finance.CwNewJhfkd">
+
+        select jhfkd.bmbh,bmda.bmmc,jhfkd.gysbh,gysda.gysmc,jhfkd.lydh,ygda.ygmc ywy,jhfkd.rq,jhfkd.bzxx,jhfkd.fyzh,jhfkd.fkfs,jhfkd.fklx,jhfkd.sl,jhfkd.sdjy,jhfkd.ljye,jhfkd.bmsdjy,jhfkd.bmljye,jhfkd.bcyfhk,jhfkd.dfyf,jhfkd.bcfk,jhfkd.dj,jhfkd.bzj,jhfkd.yhje
+        from cw_new_jhfkd jhfkd
+        LEFT JOIN da_bmda bmda ON jhfkd.bmbh = bmda.bmbh
+        LEFT JOIN da_gysda gysda ON jhfkd.gysbh=gysda.gysbh
+        LEFT JOIN da_ygda ygda ON jhfkd.ywy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.datasource.BaseDatasourceMapper">
+  <resultMap id="BaseResultMap" type="com.springboot.model.datasource.BaseDatasource">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="driver_class_name" jdbcType="VARCHAR" property="driverClassName" />
+    <result column="org_id" jdbcType="VARCHAR" property="orgId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+  <select id="getList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * from base_datasource;
+  </select>
+  <select id="getCountByOrgId" parameterType="java.lang.String" resultType="Integer">
+        select count(1) from base_datasource where org_id = #{orgId}
+    </select>
+  <delete id="deleteByOrgId" parameterType="java.lang.String">
+    delete from base_datasource
+    <where>
+      <if test="orgId!=null and orgId!=''">and org_id= #{orgId}</if>
+    </where>
+  </delete>
+</mapper>

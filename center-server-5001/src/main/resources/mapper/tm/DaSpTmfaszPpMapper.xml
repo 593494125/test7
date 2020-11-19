@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.tm.DaSpTmfaszPpMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.tm.DaSpTmfaszPp">
+        <id column="ppbh" property="ppbh" />
+        <result column="jqfa" property="jqfa" />
+        <result column="zjws" property="zjws" />
+        <result column="zjqsws" property="zjqsws" />
+        <result column="zjjsws" property="zjjsws" />
+        <result column="ydqws" property="ydqws" />
+        <result column="sfqy" property="sfqy" />
+        <result column="mrtmfa" property="mrtmfa" />
+        <result column="bz" property="bz" />
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ppbh, jqfa, zjws, zjqsws, zjjsws, ydqws, sfqy, mrtmfa, bz
+    </sql>
+    <select id="getSystemTmbh" resultType="com.springboot.model.tm.SystemTmfa1">
+        SELECT csbh,bzxx fROM dbo.da_qj_csb WHERE csfl='TMJQFS' AND qybz='1'
+    </select>
+    <select id="getPpTmbhList" resultType="com.springboot.model.tm.DaSpTmfaszPpJson">
+        select jqfa,zjws,zjqsws,zjjsws,ydqws from da_sp_tmfasz_pp
+    </select>
+    <select id="getFjTmbh" parameterType="java.lang.String" resultType="com.springboot.model.tm.FjTmbhJson1">
+        select A.TMH fjtm,B.tmbh from  da_sp_spda_mx_fjtm A ,DA_SP_SPDA_MX B WHERE A.SPBH=B.SPBH and A.TMH=#{ppTmbh}
+    </select>
+    <select id="getAllFjTmbh" resultType="com.springboot.model.tm.FjTmbhJson1">
+        select A.TMH fjtm,B.tmbh from  da_sp_spda_mx_fjtm A ,DA_SP_SPDA_MX B WHERE A.SPBH=B.SPBH
+    </select>
+</mapper>

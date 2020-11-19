@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.purchase.YwCgDdmxMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.purchase.YwCgDdmx">
+        <id column="pzh" property="pzh" />
+        <result column="mxdh" property="mxdh" />
+        <result column="spkh" property="spkh" />
+        <result column="ksmc" property="ksmc" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="ysmc" property="ysmc" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="jldw" property="jldw" />
+        <result column="jj" property="jj" />
+        <result column="lsj" property="lsj" />
+        <result column="dpj" property="dpj" />
+        <result column="zkl" property="zkl" />
+        <result column="hbzxx" property="hbzxx" />
+        <result column="hjhrq" property="hjhrq" />
+        <result column="cm1" property="cm1" />
+        <result column="cm2" property="cm2" />
+        <result column="cm3" property="cm3" />
+        <result column="cm4" property="cm4" />
+        <result column="cm5" property="cm5" />
+        <result column="cm6" property="cm6" />
+        <result column="cm7" property="cm7" />
+        <result column="cm8" property="cm8" />
+        <result column="cm9" property="cm9" />
+        <result column="cm10" property="cm10" />
+        <result column="cm11" property="cm11" />
+        <result column="cm12" property="cm12" />
+        <result column="cm13" property="cm13" />
+        <result column="cm14" property="cm14" />
+        <result column="cm15" property="cm15" />
+        <result column="cm16" property="cm16" />
+        <result column="cm17" property="cm17" />
+        <result column="cm18" property="cm18" />
+        <result column="cm19" property="cm19" />
+        <result column="cm20" property="cm20" />
+        <result column="cm21" property="cm21" />
+        <result column="cm22" property="cm22" />
+        <result column="cm23" property="cm23" />
+        <result column="cm24" property="cm24" />
+        <result column="cm25" property="cm25" />
+        <result column="cm26" property="cm26" />
+        <result column="cm27" property="cm27" />
+        <result column="cm28" property="cm28" />
+        <result column="cm29" property="cm29" />
+        <result column="cm30" property="cm30" />
+        <result column="cm31" property="cm31" />
+        <result column="cm32" property="cm32" />
+        <result column="cm33" property="cm33" />
+        <result column="cm34" property="cm34" />
+        <result column="cm35" property="cm35" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, mxdh, spkh, ksmc, cmzbh, ysmc, bxbh, bxmc, ysbh, yslsh, jldw, jj, lsj, dpj, zkl, hbzxx, hjhrq, cm1, cm2, cm3, cm4, cm5, cm6, cm7, cm8, cm9, cm10, cm11, cm12, cm13, cm14, cm15, cm16, cm17, cm18, cm19, cm20, cm21, cm22, cm23, cm24, cm25, cm26, cm27, cm28, cm29, cm30, cm31, cm32, cm33, cm34, cm35
+    </sql>
+    <select id="getJjTotal" parameterType="java.lang.String" resultType="Double">
+        SELECT sum(cm1+cm2+cm3+cm4+cm5+cm6+cm7+cm8+cm9+cm10+cm11+cm12+cm13+cm14+cm15+cm16+cm17+cm18+cm19+cm20+cm21+cm22+cm23+cm24+cm25+cm26+cm27+cm28+cm29+cm30+cm31+cm32+cm33+cm34+cm35) as total from yw_cg_ddmx
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh =#{pzh}</if>
+        </where>
+    </select>
+    <select id="getZjje" parameterType="java.lang.String" resultType="Double">
+        SELECT sum(jj) from yw_cg_ddmx
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh =#{pzh}</if>
+        </where>
+    </select>
+    <insert id="insertBatch" >
+        insert into yw_cg_ddmx (pzh, mxdh, spkh, ksmc, cmzbh, ysmc, bxbh, bxmc, ysbh, yslsh, jldw, jj, lsj, dpj, zkl, hbzxx, hjhrq, cm1, cm2, cm3, cm4, cm5, cm6, cm7, cm8, cm9, cm10, cm11, cm12, cm13, cm14, cm15, cm16, cm17, cm18, cm19, cm20, cm21, cm22, cm23, cm24, cm25, cm26, cm27, cm28, cm29, cm30, cm31, cm32, cm33, cm34, cm35)
+        values
+        <foreach collection="list" item="bean" index="index" separator=",">
+            (#{bean.pzh},#{bean.mxdh},#{bean.spkh},#{bean.ksmc},#{bean.cmzbh},#{bean.ysmc},#{bean.bxbh},#{bean.bxmc},#{bean.ysbh},#{bean.yslsh}, #{bean.jldw}, #{bean.jj},#{bean.lsj}, #{bean.dpj}, #{bean.zkl}, #{bean.hbzxx}, #{bean.hjhrq}, #{bean.cm1}, #{bean.cm2}, #{bean.cm3}, #{bean.cm4}, #{bean.cm5}, #{bean.cm6}, #{bean.cm7}, #{bean.cm8}, #{bean.cm9}, #{bean.cm10}, #{bean.cm11}, #{bean.cm12}, #{bean.cm13}, #{bean.cm14}, #{bean.cm15}, #{bean.cm16}, #{bean.cm17}, #{bean.cm18}, #{bean.cm19}, #{bean.cm20}, #{bean.cm21}, #{bean.cm22}, #{bean.cm23}, #{bean.cm24}, #{bean.cm25}, #{bean.cm26}, #{bean.cm27}, #{bean.cm28}, #{bean.cm29}, #{bean.cm30}, #{bean.cm31}, #{bean.cm32}, #{bean.cm33}, #{bean.cm34}, #{bean.cm35})
+        </foreach>
+    </insert>
+</mapper>

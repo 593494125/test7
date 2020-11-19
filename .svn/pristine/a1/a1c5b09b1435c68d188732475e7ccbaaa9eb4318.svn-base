@@ -1,0 +1,18 @@
+package com.springboot.service.version;
+
+import com.baomidou.mybatisplus.service.IService;
+import com.springboot.model.version.SqlVersionMaster;
+
+/**
+ * <p>
+ * A8版本主表 服务类
+ * </p>
+ *
+ * @author zjq
+ * @since 2020-10-27
+ */
+public interface SqlVersionMasterService extends IService<SqlVersionMaster> {
+
+    public String findA8Version(String sixCode);
+
+}

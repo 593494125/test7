@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.posparm.YwPosMxMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.posparm.YwPosMx">
+        <id column="jyh" property="jyh" />
+        <result column="lsh" property="lsh" />
+        <result column="spbh" property="spbh" />
+        <result column="yyyh" property="yyyh" />
+        <result column="sl" property="sl" />
+        <result column="lsj" property="lsj" />
+        <result column="sjje" property="sjje" />
+        <result column="zke" property="zke" />
+        <result column="lsfs" property="lsfs" />
+        <result column="hykh" property="hykh" />
+        <result column="zkl" property="zkl" />
+        <result column="yhje" property="yhje" />
+        <result column="spkh" property="spkh" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="cm" property="cm" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="yslsj" property="yslsj" />
+        <result column="ysdpj" property="ysdpj" />
+        <result column="yszkl" property="yszkl" />
+        <result column="danjia" property="danjia" />
+        <result column="zkqh" property="zkqh" />
+        <result column="khjg" property="khjg" />
+        <result column="dbjg" property="dbjg" />
+        <result column="diejiacxfa" property="diejiacxfa" />
+        <result column="jhjg" property="jhjg" />
+        <result column="ppbh" property="ppbh" />
+        <result column="ybcxfa" property="ybcxfa" />
+        <result column="gszdj" property="gszdj" />
+        <result column="pfjg" property="pfjg" />
+        <result column="pjjb" property="pjjb" />
+        <result column="jgzzpzh" property="jgzzpzh" />
+        <result column="jhjg_gys" property="jhjgGys" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.springboot.model.purchase.YwCgRkdmxJson">
+        <id column="pzh" property="pzh" />
+        <result column="mxdh" property="mxdh" />
+        <result column="spkh" property="spkh" />
+        <result column="spbh" property="spbh" />
+        <result column="ksmc" property="ksmc" />
+        <result column="cmzbh" property="cmzbh" />
+        <result column="ysmc" property="ysmc" />
+        <result column="bxbh" property="bxbh" />
+        <result column="bxmc" property="bxmc" />
+        <result column="ysbh" property="ysbh" />
+        <result column="yslsh" property="yslsh" />
+        <result column="jldw" property="jldw" />
+        <result column="jj" property="jj" />
+        <result column="lsj" property="lsj" />
+        <result column="dpj" property="dpj" />
+        <result column="zkl" property="zkl" />
+        <result column="sl" property="sl" />
+        <result column="cm" property="cm" />
+        <result column="hjhrq" property="hjhrq" />
+        <result column="hjjze" property="hjjze" />
+        <result column="tmbh" property="tmbh" />
+        <result column="cmbh" property="cmbh" />
+
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        jyh, lsh, spbh, yyyh, sl, lsj, sjje, zke, lsfs, hykh, zkl, yhje, spkh, ysbh, yslsh, cm, cmzbh, bxbh, bxmc, yslsj, ysdpj, yszkl, danjia, zkqh, khjg, dbjg, diejiacxfa, jhjg, ppbh, ybcxfa, gszdj, pfjg, pjjb, jgzzpzh, jhjg_gys
+    </sql>
+    <select id="selectZxList" resultMap="BaseResultMap1">
+
+        select posmx.jyh as pzh,posmx.sjje as hjjze,posmx.danjia,posmx.spkh,posmx.jgzzpzh,posmx.gszdj,posmx.yyyh,pic.img,spda.ksmc,posmx.spbh,cmzbh,ysda.ysmc,posmx.bxbh,bxda.bxmc,posmx.ysbh,posmx.yslsh,spda.jldw,posmx.zke,ygda.ygmc as dgmc,convert(decimal(30,2),lsj) jj,convert(decimal(30,2),lsj)lsj,convert(decimal(30,2),zkl)zkl,convert(decimal(30,0),posmx.sl)sl,spmx.cmbh,spmx.cmdmlwz cm,spmx.tmbh
+        from yw_pos_mx posmx
+        left join da_sp_spda  spda on posmx.spkh=spda.spkh
+        left join da_sp_ysda  ysda on posmx.yslsh=ysda.yslsh
+        left join da_sp_bxda  bxda on posmx.bxbh=bxda.bxbh
+        left join da_sp_spda_mx spmx on posmx.spbh=spmx.spbh
+        LEFT JOIN da_ygda ygda ON posmx.yyyh = ygda.ygbh
+        LEFT JOIN ( SELECT  p.spkh ,
+        p.default_disp img
+        FROM    dbo.da_sp_pic p ,
+        ( SELECT    spkh ,
+        MIN(pxxh) pxxh
+        FROM      dbo.da_sp_pic
+        GROUP BY  spkh
+        ) p1
+        WHERE   p.spkh = p1.spkh
+        AND p.pxxh = p1.pxxh
+        ) pic ON spda.spkh = pic.spkh
+        <where>
+            <if test="pzh!=null and pzh!=''">and posmx.jyh = #{pzh}</if>
+        </where>
+        order by posmx.spkh,posmx.ysbh,posmx.bxbh,convert(int,substring(spmx.cmdmlwz,3,2))
+    </select>
+    <select id="selectYsHzList" resultMap="BaseResultMap1">
+        select posmx.jyh as pzh,posmx.spkh+posmx.yslsh ysspkh,posmx.sjje as hjjze,posmx.danjia,posmx.spkh,posmx.jgzzpzh,posmx.gszdj,posmx.yyyh,pic.img,spda.ksmc,posmx.spbh,cmzbh,ysda.ysmc,posmx.bxbh,bxda.bxmc,posmx.ysbh,posmx.yslsh,spda.jldw,posmx.zke,ygda.ygmc as dgmc,convert(decimal(30,2),lsj) jj,convert(decimal(30,2),lsj)lsj,convert(decimal(30,2),zkl)zkl,convert(decimal(30,0),posmx.sl)sl,spmx.cmbh,spmx.cmdmlwz cm,spmx.tmbh
+        from yw_pos_mx posmx
+        left join da_sp_spda  spda on posmx.spkh=spda.spkh
+        left join da_sp_ysda  ysda on posmx.yslsh=ysda.yslsh
+        left join da_sp_bxda  bxda on posmx.bxbh=bxda.bxbh
+        left join da_sp_spda_mx spmx on posmx.spbh=spmx.spbh
+        LEFT JOIN da_ygda ygda ON posmx.yyyh = ygda.ygbh
+        LEFT JOIN ( SELECT  p.spkh ,
+        p.default_disp img
+        FROM    dbo.da_sp_pic p ,
+        ( SELECT    spkh ,
+        MIN(pxxh) pxxh
+        FROM      dbo.da_sp_pic
+        GROUP BY  spkh
+        ) p1
+        WHERE   p.spkh = p1.spkh
+        AND p.pxxh = p1.pxxh
+        ) pic ON spda.spkh = pic.spkh
+        <where>
+            <if test="pzh!=null and pzh!=''">and posmx.jyh = #{pzh}</if>
+        </where>
+        order by posmx.spkh+posmx.yslsh
+    </select>
+    <select id="findYwSaleDayDetail" parameterType="java.lang.String" resultType="com.springboot.model.posparm.YwPosSaleDay">
+
+        select a.bmbh,a.bmmc,count(a.jyh) as jycs,a.rq,sum(a.sl) as sl,sum(a.lsje) as zje,SUM(a.xyk) xyk,SUM(a.ngq) ngq,SUM(a.xj)-sum(a.zl) xj,SUM(a.hyk) hyk,SUM(a.wx) wx,SUM(a.ali) ali
+        ,SUM(a.zdyzf1) zdyzf1 ,SUM(a.zdyzf2) zdyzf2 ,SUM(a.zdyzf3) zdyzf3 ,SUM(a.zdyzf4) zdyzf4 ,SUM(a.zdyzf5) zdyzf5,SUM(a.yhe) yhe ,SUM(a.dj) jdj,SUM(a.gwq) gwq,sum(a.jfje) jfje
+        ,ISNULL((SELECT SUM(djje) FROM dbo.yw_pos_dj_hz WHERE  CONVERT(DATE,skrq,120)=#{rq} and bmbh=#{bmbh}) ,0) dj
+        ,ISNULL((SELECT  ISNULL(SUM(ISNULL(czje,0)),0) FROM dbo.da_hy_hykcz  WHERE bmbh=#{bmbh} and CONVERT(date,ywrq,120)=#{rq}),0) cz
+        ,ISNULL((SELECT  ISNULL(SUM(ISNULL(ssxj,0)),0) FROM dbo.da_hy_hykcz  WHERE bmbh=#{bmbh}  and CONVERT(date,ywrq,120)=#{rq}),0) czssxj
+        from (select poshz.bmbh,poshz.jyh,bmda.bmmc ,CONVERT(VARCHAR,poshz.rq,23) as rq,ygda.ygmc as skymc,poshz.zl,poshz.bzxx,poshz.sl,poshz.lsje,poshz.zkje,poshz.hyh,hyda.xm as hymc,poshz.hykh,poshz.jf,poshz.jqbh,poshz.xyk,poshz.ngq,poshz.dj,poshz.gwq,poshz.jfje,kmx.dqjf ,kmx.dqye ,poshz.xj,poshz.hyk,poshz.zfqd,
+        poshz.zdyzf1,poshz.zdyzf2,poshz.zdyzf3,poshz.zdyzf4,poshz.zdyzf5,poshz.yhe,
+        case when zfqd='WX' then poshz.ng else 0 end as wx,
+        case when zfqd!='WX' then poshz.ng else 0 end as ali
+
+        from yw_pos_hz poshz
+        LEFT JOIN da_bmda bmda ON poshz.bmbh = bmda.bmbh
+        LEFT JOIN da_ygda ygda ON poshz.skyh = ygda.ygbh
+        LEFT JOIN da_hy_hyda_kmx kmx ON poshz.hykh = kmx.kh
+        LEFT JOIN da_hy_hyda hyda ON poshz.hyh = hyda.hyh
+
+        <where>
+            <if test="bmbh!=null and bmbh!=''">and poshz.bmbh = #{bmbh}</if>
+            <if test="jqbh!=null and jqbh!=''">and poshz.jqbh = #{jqbh}</if>
+            <if test="rq!=null and rq!=''">and CONVERT(VARCHAR,poshz.rq,23)=#{rq}) a group by a.bmbh,a.bmmc,a.rq</if>
+        </where>
+    </select>
+</mapper>

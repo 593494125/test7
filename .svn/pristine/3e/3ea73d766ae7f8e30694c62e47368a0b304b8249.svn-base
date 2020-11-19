@@ -1,0 +1,318 @@
+package com.springboot.service.impl.system;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.springboot.common.RedisUtil;
+import com.springboot.common.SystemConstant;
+import com.springboot.dao.system.DaQxZydaMapper;
+import com.springboot.model.MoKuaiAuthJson;
+import com.springboot.model.system.*;
+import com.springboot.model.user.DaQxYhda;
+import com.springboot.service.employee.DaYgdaService;
+import com.springboot.service.system.DaQxZydaService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
+
+/**
+ * <p>
+ *  服务实现类
+ * </p>
+ *
+ * @author zjq
+ * @since 2020-07-06
+ */
+@Service
+@Transactional(rollbackFor = Exception.class)
+@Slf4j
+public  class DaQxZydaServiceImpl extends ServiceImpl<DaQxZydaMapper, DaQxZyda> implements DaQxZydaService {
+
+    @Resource
+    private DaQxZydaMapper daQxZydaMapper;
+    @Resource
+    private DaYgdaService daYgdaService;
+    @Resource
+    private RedisUtil redisUtil;
+    @Override
+    public List<GnqxJson> findAll(String sixCode, DaQxYhda user) {
+        //获取系统所有的功能权限名称
+        List<DaQxZyda> list =null;
+        String daQxZydaStr="";
+//        String daQxZydaStr=redisUtil.get(sixCode,sixCode+"_daQxZyda");
+        if(StringUtils.isBlank(daQxZydaStr)){
+            list =daQxZydaMapper.findAll();
+            if(list!=null&&list.size()>0){
+                redisUtil.set(sixCode,sixCode+"_daQxZyda",JSONObject.toJSONString(list));
+                log.info("系统所有的功能权限是从数据库中获取list为:"+list);
+            }
+        }else{
+            list= JSONObject.parseArray(daQxZydaStr,DaQxZyda.class);
+            log.info("系统所有的功能权限是从redis缓存中获取key为:"+sixCode+"_daQxZyda");
+        }
+        //获取系统分配的所有功能权限
+        String zyzfcStr="";
+//        String zyzfcStr=redisUtil.get(sixCode,sixCode+"_zyzfc");
+        ZyzfcJson  zyzfcJson=null;
+        if(StringUtils.isBlank(zyzfcStr)){
+            zyzfcJson =daQxZydaMapper.findZyzfc();
+            if(zyzfcJson!=null){
+                redisUtil.set(sixCode,sixCode+"_zyzfc",JSONObject.toJSONString(zyzfcJson));
+                log.info("系统分配的所有功能权限是从数据库中获取zyzfcJson为:"+zyzfcJson);
+            }
+        }else{
+            zyzfcJson=JSONObject.parseObject(zyzfcStr,ZyzfcJson.class);
+            log.info("系统分配的所有功能权限是从redis缓存中获取key为:"+sixCode+"_zyzfc");
+        }
+        //获取当前用户的功能权限
+        String userZyzfcStr="";
+//        String userZyzfcStr=redisUtil.get(sixCode,sixCode+"_"+user.getYgbh()+"_userZyzfc");
+        ZyzfcJson  userZyzfcJson=null;
+        if(StringUtils.isBlank(userZyzfcStr)){
+            userZyzfcJson =daQxZydaMapper.findUserZyzfc(user.getYgbh());
+            if(userZyzfcJson!=null){
+                redisUtil.set(sixCode,sixCode+"_"+user.getYgbh()+"_userZyzfc",JSONObject.toJSONString(userZyzfcJson));
+                log.info("当前用户的功能权限是从数据库中获取userZyzfcJson为:"+userZyzfcJson);
+            }
+        }else{
+            userZyzfcJson=JSONObject.parseObject(userZyzfcStr,ZyzfcJson.class);
+            log.info("当前用户的功能权限是从redis缓存中获取key为:"+sixCode+"_"+user.getYgbh()+"_userZyzfc");
+        }
+        List<GnqxJson> gnqxJsonList=new ArrayList<GnqxJson>();
+
+        if(zyzfcJson!=null){
+            String zyzfc=zyzfcJson.getZyzfc();//系统分配的所有功能权限
+            if(userZyzfcJson!=null){
+                String userZyzfc=userZyzfcJson.getZyzfc();//当前用户系统分配的所有功能权限
+                String[] zyzfcArray=zyzfc.split(",");
+                if(zyzfcArray!=null&&zyzfcArray.length>0){
+                    int k=zyzfcArray.length;
+                    //获取所有的gnbh
+                    int g=list.size();
+                    GnqxJson gnqxJson=new GnqxJson();
+                    if(list!=null&&g>0){
+                        for (int i = 0; i <k ; i++) {
+                            String newZyzfc=zyzfcArray[i];//系统分配的所有功能权限
+                            ok:
+                            for (int j = 0; j < g; j++) {
+                                DaQxZyda daQxZyda=list.get(j);
+                                if(newZyzfc.equals(daQxZyda.getGnbh())){
+                                    gnqxJson= (GnqxJson) gnqxJson.clone();
+                                    gnqxJson.setKey(daQxZyda.getBzxx());
+                                    gnqxJson.setName(daQxZyda.getGnmc());
+                                    //获取是否有权限
+                                    if(userZyzfc.contains(newZyzfc)){
+                                        gnqxJson.setQx("Y");
+                                    }else{
+                                        gnqxJson.setQx("N");
+                                    }
+                                    gnqxJsonList.add(gnqxJson);
+                                    break ok;
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        return gnqxJsonList;
+    }
+
+    @Override
+    public Object newFindAll(String sixCode, String code, DaQxYhda user) {
+        Object obj =null;
+        List<DaQxZyda> list =null;
+        String cdbh="";
+        //从redis中通过yhbh获取groupId
+        String groupId=user.getGroupId();
+        if(StringUtils.isEmpty(groupId)){
+            String userJson=redisUtil.get(sixCode,sixCode+ SystemConstant.REDIS_YHDA_TABLE);
+            if(StringUtils.isNotEmpty(userJson)){
+                List<DaQxYhda> userJsonList= JSONArray.parseArray(userJson,DaQxYhda.class);
+                if(userJsonList!=null&&userJsonList.size()>0){
+                    for (DaQxYhda daQxYhda:userJsonList) {
+                        if(user.getYhbh().toLowerCase().equals(daQxYhda.getYhbh().toLowerCase())){
+                            groupId=daQxYhda.getGroupId();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        //通过groupId获取三级菜单编号cdbh
+        List<MoKuaiAuthJson> moKuaiAuthList=daYgdaService.newFindMoKuaiAuth(sixCode,user.getYhbh());
+        //获取三级菜单编号cdbh
+        if(moKuaiAuthList!=null&&moKuaiAuthList.size()>0){
+            for (MoKuaiAuthJson moKuaiAuthJson: moKuaiAuthList) {
+                if(code.equals(moKuaiAuthJson.getCode())){
+                    cdbh=moKuaiAuthJson.getCdbh();
+                    break;
+                }
+            }
+        }
+
+//        String daQxZydaStr="";
+        String daQxZydaStr=redisUtil.get(sixCode,sixCode+"_daQxZyda");
+        if(StringUtils.isBlank(daQxZydaStr)){
+            list =daQxZydaMapper.findAll();
+            if(list!=null&&list.size()>0){
+                redisUtil.set(sixCode,sixCode+"_daQxZyda",JSONObject.toJSONString(list));
+                log.info("系统所有的功能权限是从数据库中获取list为:"+list);
+            }
+        }else{
+            list= JSONObject.parseArray(daQxZydaStr,DaQxZyda.class);
+            log.info("系统所有的功能权限是从redis缓存中获取key为:"+sixCode+"_daQxZyda");
+        }
+
+        //获取系统分配的所有功能权限
+//        String zyzfcStr="";
+        String zyzfcStr=redisUtil.get(sixCode,sixCode+"_zyzfc");
+        List<ZyzfcUserJson> zyzfcJsonList=null;
+        ZyzfcUserJson  zyzfcJson=null;
+        if(StringUtils.isBlank(zyzfcStr)){
+            zyzfcJsonList =daQxZydaMapper.newFindZyzfc();
+            if(zyzfcJsonList!=null&&zyzfcJsonList.size()>0){
+                for (ZyzfcUserJson zyzfcUserJson: zyzfcJsonList) {
+                    if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                        zyzfcJson=zyzfcUserJson;
+                        break;
+                    }
+                }
+                redisUtil.set(sixCode,sixCode+"_zyzfc",JSONObject.toJSONString(zyzfcJsonList));
+                log.info("系统分配的所有功能权限是从数据库中获取zyzfcJson为:"+zyzfcJson);
+            }
+        }else{
+            try{
+                zyzfcJsonList= JSONArray.parseArray(zyzfcStr,ZyzfcUserJson.class);
+                if(zyzfcJsonList!=null&&zyzfcJsonList.size()>0){
+                    for (ZyzfcUserJson zyzfcUserJson: zyzfcJsonList) {
+                        if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                            zyzfcJson=zyzfcUserJson;
+                            break;
+                        }
+                    }
+                }
+                log.info("系统分配的所有功能权限是从redis缓存中获取key为:"+sixCode+"_zyzfc");
+            }catch(Exception e){
+                zyzfcJsonList =daQxZydaMapper.newFindZyzfc();
+                if(zyzfcJsonList!=null&&zyzfcJsonList.size()>0){
+                    for (ZyzfcUserJson zyzfcUserJson: zyzfcJsonList) {
+                        if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                            zyzfcJson=zyzfcUserJson;
+                            break;
+                        }
+                    }
+                    redisUtil.set(sixCode,sixCode+"_zyzfc",JSONObject.toJSONString(zyzfcJsonList));
+                    log.info("系统分配的所有功能权限是从数据库中获取zyzfcJson为:"+zyzfcJson);
+                }
+            }
+
+        }
+        //获取当前用户的功能权限
+//        String userZyzfcStr="";
+        List<ZyzfcUserJson> userZyzfcJsonList=null;
+        String userZyzfcStr=redisUtil.get(sixCode,sixCode+"_"+groupId+"_userZyzfc");
+        ZyzfcUserJson  userZyzfcJson=null;
+        if(StringUtils.isBlank(userZyzfcStr)){
+            userZyzfcJsonList =daQxZydaMapper.newFindUserZyzfc(user.getYgbh());
+            if(userZyzfcJsonList!=null&&userZyzfcJsonList.size()>0){
+                for (ZyzfcUserJson zyzfcUserJson: userZyzfcJsonList) {
+                    if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                        userZyzfcJson=zyzfcUserJson;
+                        break;
+                    }
+                }
+                redisUtil.set(sixCode,sixCode+"_"+groupId+"_userZyzfc",JSONObject.toJSONString(userZyzfcJsonList));
+                log.info("当前用户的功能权限是从数据库中获取userZyzfcJson为:"+userZyzfcJson);
+            }
+        }else{
+            try{
+                userZyzfcJsonList= JSONArray.parseArray(userZyzfcStr,ZyzfcUserJson.class);
+                if(userZyzfcJsonList!=null&&userZyzfcJsonList.size()>0){
+                    for (ZyzfcUserJson zyzfcUserJson: userZyzfcJsonList) {
+                        if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                            userZyzfcJson=zyzfcUserJson;
+                            break;
+                        }
+                    }
+                }
+                log.info("当前用户的功能权限是从redis缓存中获取key为:"+sixCode+"_"+cdbh+"_userZyzfc");
+            }catch(Exception e){
+                userZyzfcJsonList =daQxZydaMapper.newFindUserZyzfc(user.getYgbh());
+                if(userZyzfcJsonList!=null&&userZyzfcJsonList.size()>0){
+                    for (ZyzfcUserJson zyzfcUserJson: userZyzfcJsonList) {
+                        if(cdbh.equals(zyzfcUserJson.getSjbh())){
+                            userZyzfcJson=zyzfcUserJson;
+                            break;
+                        }
+                    }
+                    redisUtil.set(sixCode,sixCode+"_"+groupId+"_userZyzfc",JSONObject.toJSONString(userZyzfcJsonList));
+                    log.info("当前用户的功能权限是从数据库中获取userZyzfcJson为:"+userZyzfcJson);
+                }
+            }
+        }
+        if(zyzfcJson!=null){
+            String userZyzfc="";
+            if(userZyzfcJson!=null){
+                userZyzfc=userZyzfcJson.getZyzfc();//当前用户系统分配的所有功能权限
+            }
+            String zyzfc=zyzfcJson.getZyzfc();//系统分配的所有功能权限
+            String[] zyzfcArray=zyzfc.split(",");
+            if(zyzfcArray!=null&&zyzfcArray.length>0){
+                int k=zyzfcArray.length;
+                int g=list.size();
+                HashMap propertyMap = new HashMap();
+                HashMap resultMap = new HashMap();
+                if(list!=null&&g>0){
+                    for (int i = 0; i <k ; i++) {
+                        String newZyzfc=zyzfcArray[i];//系统分配的所有功能权限
+                        ok:
+                        for (int j = 0; j < g; j++) {
+                            DaQxZyda daQxZyda=list.get(j);
+                            try {
+                                if(newZyzfc.equals(daQxZyda.getGnbh())){
+                                    String key=daQxZyda.getBzxx();//获取key
+                                    if("POS".equals(code)){//因为pos小写和大写都有，所以统一转为小写
+                                        key=key.toLowerCase();
+                                    }
+                                    propertyMap.put(key, Class.forName("java.lang.String"));
+                                    //获取是否有权限
+                                    if(StringUtils.isNotEmpty(userZyzfc)){
+                                        if(userZyzfc.contains(newZyzfc)){
+                                            resultMap.put(key,"Y");
+                                        }else{
+                                            resultMap.put(key,"N");
+                                        }
+                                        break ok;
+                                    }else{
+                                        resultMap.put(key,"N");
+                                    }
+                                }
+                            }catch(Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    //map转换成实体对象
+                    DynamicBean bean = new DynamicBean(propertyMap);
+                    //赋值
+                    Set keys = propertyMap.keySet();
+                    for (Iterator it = keys.iterator(); it.hasNext(); ) {
+                        String key = (String) it.next();
+                        bean.setValue(key, resultMap.get(key));
+                    }
+                    obj = bean.getObject();
+                }
+            }
+
+        }
+        return obj;
+    }
+
+}

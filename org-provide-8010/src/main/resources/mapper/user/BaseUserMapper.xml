@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.user.BaseUserMapper">
+  <resultMap id="BaseResultMap" type="com.springboot.model.user.BaseUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+    <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+    <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+    <result column="org_id" jdbcType="VARCHAR" property="orgId" />
+  </resultMap>
+  <sql id="BaseColumns">
+    id,`name`,user_name,pass_word,state,remarks,create_time,create_user,create_user_id,update_time,update_user,update_user_id,org_id
+  </sql>
+
+  <select id="getList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * from base_user baseuser where baseuser.org_id=#{orgId};
+  </select>
+  <select id="findByUserName" parameterType="java.lang.String" resultType="Integer">
+    SELECT count(*) from base_user
+    <where>
+      <if test="userName!=null and userName!=''">and user_name =#{userName}</if>
+      <if test="id!=null and id!=''">and id !=#{id}</if>
+      and flag=0
+    </where>
+  </select>
+
+</mapper>

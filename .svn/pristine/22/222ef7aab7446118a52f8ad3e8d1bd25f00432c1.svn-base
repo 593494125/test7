@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.transfer.YwDbRkdhzMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.transfer.YwDbRkdhz">
+        <id column="pzh" property="pzh" />
+        <result column="kdrq" property="kdrq" />
+        <result column="bmbh1" property="bmbh1" />
+        <result column="bmbh2" property="bmbh2" />
+        <result column="khdh" property="khdh" />
+        <result column="zjsl" property="zjsl" />
+        <result column="zjje" property="zjje" />
+        <result column="cgy" property="cgy" />
+        <result column="kdr" property="kdr" />
+        <result column="cgfs" property="cgfs" />
+        <result column="xxly" property="xxly" />
+        <result column="lydh" property="lydh" />
+        <result column="djlx" property="djlx" />
+        <result column="jzbz" property="jzbz" />
+        <result column="bzxx" property="bzxx" />
+        <result column="fhlx" property="fhlx" />
+        <!--<result column="sjc" property="sjc" />-->
+        <result column="xgr" property="xgr" />
+        <result column="xgsj" property="xgsj" />
+        <result column="jzr" property="jzr" />
+        <result column="jzsj" property="jzsj" />
+        <result column="kdsj" property="kdsj" />
+        <result column="lsjze" property="lsjze" />
+        <result column="zdbz" property="zdbz" />
+        <result column="khjs" property="khjs" />
+        <result column="dbck" property="dbck" />
+        <result column="jzbz_rkf" property="jzbzRkf" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, kdrq, bmbh1, bmbh2, khdh, zjsl, zjje, cgy, kdr, cgfs, xxly, lydh, djlx, jzbz, bzxx, fhlx, xgr, xgsj, jzr, jzsj, kdsj, lsjze, zdbz, khjs, dbck, jzbz_rkf
+    </sql>
+    <select id="getList" resultMap="BaseResultMap">
+        select pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from (select row_number() over(order by kdsj desc) as rownumber,pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from (select pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from yw_db_rkdhz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh1 in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and dbc='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getQueryPage" resultMap="BaseResultMap">
+        select pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from (select row_number() over(order by kdsj desc) as rownumber,pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from (select pzh,kdrq,bmbh1,bmbh2,khdh,zjsl,zjje,cgy,kdr,cgfs,xxly,djlx,jzbz,kdsj,lsjze from yw_db_rkdhz
+
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="startTime!=null and startTime!='' and endTime!=null and endTime!=''">and CONVERT(date,kdrq) between #{startTime} and #{endTime}</if>
+            <if test="bmbh1!=null and bmbh1!=''">and bmbh1 = #{bmbh1}</if>
+            <if test="bmbh2!=null and bmbh2!=''">and bmbh2 = #{bmbh2}</if>
+            <if test="cgy!=null and cgy!=''">and cgy = #{cgy}</if>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh1 in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and db='1') and bmbh2 in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and dbc='1')</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="getPzh" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select rkdhz.pzh from yw_db_rkdhz rkdhz
+        <where>
+            <if test="xxly!=null and xxly!=''">and xxly = #{xxly}</if>
+            <if test="djlx!=null and djlx!=''">and djlx = #{djlx}</if>
+            <if test="yhbh!=null and yhbh!=''">and bmbh1 in(SELECT bmbh FROM da_qx_bmqxsz WHERE yhbh = #{yhbh} and dbc='1')</if>
+            order by kdsj desc
+        </where>
+    </select>
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.transfer.YwDbRkdhz">
+
+        select rkdhz.kdrq,rkdhz.bzxx,rkdhz.lydh,rkdhz.zjsl,rkdhz.zjje,rkdhz.cgfs,ygda.ygmc,dbo.F_GET_NAME_BY_BH(bmbh1,'da_bmda')bmbh1mc,dbo.F_GET_NAME_BY_BH(bmbh2,'da_bmda')bmbh2mc
+        from yw_db_rkdhz rkdhz
+        LEFT JOIN da_ygda ygda ON rkdhz.cgy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+        </where>
+    </select>
+    <delete id="delete" parameterType="java.lang.String">
+        delete from yw_db_rkdhz
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh= #{pzh}</if>
+        </where>
+    </delete>
+</mapper>

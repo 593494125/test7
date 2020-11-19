@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.stock.YwKcDjztPcMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.stock.YwKcDjztPc">
+        <id column="PZH" property="pzh" />
+        <result column="DQZT" property="dqzt" />
+        <result column="CZR" property="czr" />
+        <result column="CZSJ" property="czsj" />
+        <result column="BDCZ" property="bdcz" />
+        <result column="BZXX" property="bzxx" />
+        <result column="SGDJ" property="sgdj" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        PZH, DQZT, CZR, CZSJ, BDCZ, BZXX, SGDJ
+    </sql>
+    <delete id="batchDeleteByPzh" parameterType="java.lang.String">
+        delete from YW_KC_DJZT_PC
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh= #{pzh}</if>
+        </where>
+    </delete>
+</mapper>

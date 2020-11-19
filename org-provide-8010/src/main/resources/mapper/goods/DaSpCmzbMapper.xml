@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.goods.DaSpCmzbMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.goods.DaSpCmzb">
+        <id column="cmzbm" property="cmzbm" />
+        <result column="cmzmc" property="cmzmc" />
+        <result column="cmdm" property="cmdm" />
+        <result column="fcmzbm" property="fcmzbm" />
+        <result column="cmfw" property="cmfw" />
+        <result column="cm1" property="cm1" />
+        <result column="cm2" property="cm2" />
+        <result column="cm3" property="cm3" />
+        <result column="cm4" property="cm4" />
+        <result column="cm5" property="cm5" />
+        <result column="cm6" property="cm6" />
+        <result column="cm7" property="cm7" />
+        <result column="cm8" property="cm8" />
+        <result column="cm9" property="cm9" />
+        <result column="cm10" property="cm10" />
+        <result column="cm11" property="cm11" />
+        <result column="cm12" property="cm12" />
+        <result column="cm13" property="cm13" />
+        <result column="cm14" property="cm14" />
+        <result column="cm15" property="cm15" />
+        <result column="cm16" property="cm16" />
+        <result column="cm17" property="cm17" />
+        <result column="cm18" property="cm18" />
+        <result column="cm19" property="cm19" />
+        <result column="cm20" property="cm20" />
+        <result column="cm21" property="cm21" />
+        <result column="cm22" property="cm22" />
+        <result column="cm23" property="cm23" />
+        <result column="cm24" property="cm24" />
+        <result column="cm25" property="cm25" />
+        <result column="cm26" property="cm26" />
+        <result column="cm27" property="cm27" />
+        <result column="cm28" property="cm28" />
+        <result column="cm29" property="cm29" />
+        <result column="cm30" property="cm30" />
+        <result column="cm31" property="cm31" />
+        <result column="cm32" property="cm32" />
+        <result column="cm33" property="cm33" />
+        <result column="cm34" property="cm34" />
+        <result column="cm35" property="cm35" />
+        <result column="bzxx" property="bzxx" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        cmzbm, cmzmc, cmdm, fcmzbm, cmfw, cm1, cm2, cm3, cm4, cm5, cm6, cm7, cm8, cm9, cm10, cm11, cm12, cm13, cm14, cm15, cm16, cm17, cm18, cm19, cm20, cm21, cm22, cm23, cm24, cm25, cm26, cm27, cm28, cm29, cm30, cm31, cm32, cm33, cm34, cm35, bzxx
+    </sql>
+
+</mapper>

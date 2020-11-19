@@ -1,0 +1,22 @@
+server:
+  port: 7001
+  
+eureka:
+ instance:
+#   hostname: 106.12.252.218
+#   hostname: 125.76.225.17
+#   hostname: 192.168.1.11
+   hostname: 127.0.0.1
+#   hostname: 192.168.1.122
+ client:
+   register-with-eureka: false
+   fetch-registry: false
+   service-url:
+#    defaultZone: http://eureka7001.com:7001/eureka/
+    defaultZone: http://127.0.0.1:7001/eureka/
+#    defaultZone: http://192.168.1.11:7002/eureka/
+#    defaultZone: http://125.76.225.17:6001/eureka/
+
+ server:
+   enable-self-preservation: false
+   eviction-interval-timer-in-ms: 2000

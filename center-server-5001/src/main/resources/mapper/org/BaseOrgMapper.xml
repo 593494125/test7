@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.org.BaseOrgMapper">
+    <resultMap id="BaseResultMap" type="com.springboot.model.org.BaseOrg">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+        <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+        <result column="create_user_id" jdbcType="VARCHAR" property="createUserId" />
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+        <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId" />
+        <result column="count" jdbcType="INTEGER" property="count" />
+        <result column="big_org_name" jdbcType="VARCHAR" property="bigOrgName" />
+        <result column="is_start_tm_fangan" jdbcType="INTEGER" property="isStartTmFangan" />
+        <result column="host_address" jdbcType="INTEGER" property="hostAddress" />
+        <result column="area_service_url" jdbcType="VARCHAR" property="areaServiceUrl" />
+        <result column="area_address" jdbcType="VARCHAR" property="areaAddress" />
+    </resultMap>
+    <sql id="BaseColumns">
+      id,org_name,phone,address,state,path,create_time,create_user,create_user_id,update_time,update_user,update_user_id,`count`,big_org_name,is_start_tm_fangan,host_address,area_service_url,area_address
+    </sql>
+
+    <select id="getList" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT * from base_org order by update_time desc ;
+    </select>
+    <select id="getPage" parameterType="java.lang.String" resultType="com.springboot.model.org.BaseOrg">
+        select * from (select row_number() over(order by e.updateTime desc) as rownumber,* from
+        (select org.id,org.org_name orgName,org.state,org.count,org.big_org_name bigOrgName,org.address,org.host_address hostAddress,org.area_service_url areaServiceUrl,org.area_address areaAddress,org.update_time updateTime,auth.six_code sixCode,datasource.code,ord.redis_id redisId from base_org org
+        left join base_datasource datasource on org.id=datasource.org_id
+        left join base_auth auth on org.id=auth.org_id
+        left join base_org_redis_datasource ord on org.id=ord.org_id
+        left join base_redis_datasource rd on ord.redis_id=rd.id
+        <where> and 1=1
+            <if test="key!=null and key!=''">and org.big_org_name like '%'+#{key}+'%' or org.org_name like '%'+#{key}+'%' or org.host_address like '%'+#{key}+'%' or auth.six_code like '%'+#{key}+'%' or datasource.code like '%'+#{key}+'%' or datasource.url like '%'+#{key}+'%'
+                or rd.host like '%'+#{key}+'%'</if>
+            ) as e ) temp_row
+            <where>
+                <if test="pageNo!=null and pageSize!=null">temp_row.rownumber between ((#{pageNo}-1)*(#{pageSize}))+1 and (#{pageNo})*(#{pageSize})</if>
+            </where>
+        </where>
+    </select>
+    <select id="findIsStartTmFangan" parameterType="java.lang.String" resultType="string">
+        SELECT is_start_tm_fangan from base_org where id=#{orgId};
+    </select>
+    <select id="getSelectList" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT distinct (area_service_url)  from base_org where area_address=#{areaAddress} and area_service_url !=''
+    </select>
+    <select id="getAreaSelectList" resultType="java.lang.String">
+        SELECT distinct (area_address)  from base_org where area_address !='' order by area_address desc
+    </select>
+    <select id="getHsotList" resultType="java.lang.String">
+        SELECT host_address from base_org
+    </select>
+
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.finance.CwNewJhfydMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.finance.CwNewJhfyd">
+        <id column="pzh" property="pzh" />
+        <result column="rq" property="rq" />
+        <result column="fkfs" property="fkfs" />
+        <result column="lydh" property="lydh" />
+        <result column="bmbh" property="bmbh" />
+        <result column="gysbh" property="gysbh" />
+        <result column="zhbz" property="zhbz" />
+        <result column="fyzh" property="fyzh" />
+        <result column="fyxz" property="fyxz" />
+        <result column="bzxx" property="bzxx" />
+        <result column="ffkm" property="ffkm" />
+        <result column="je" property="je" />
+        <result column="sdjy" property="sdjy" />
+        <result column="ljye" property="ljye" />
+        <result column="sm" property="sm" />
+        <result column="jzbz" property="jzbz" />
+        <result column="jzsj" property="jzsj" />
+        <result column="jzr" property="jzr" />
+        <result column="zdr" property="zdr" />
+        <result column="bmsdjy" property="bmsdjy" />
+        <result column="bmljye" property="bmljye" />
+        <result column="ywy" property="ywy" />
+        <result column="kdsj" property="kdsj" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        pzh, rq, fkfs, lydh, bmbh, gysbh, zhbz, fyzh, fyxz, bzxx, ffkm, je, sdjy, ljye, sm, jzbz, jzsj, jzr, zdr, bmsdjy, bmljye, ywy, kdsj
+    </sql>
+    <select id="findByPzh" parameterType="java.lang.String" resultType="com.springboot.model.finance.CwNewJhfyd">
+
+        select jhfyd.bmbh,bmda.bmmc,jhfyd.gysbh,gysda.gysmc,jhfyd.sm,jhfyd.lydh,ygda.ygmc ywy,jhfyd.rq,jhfyd.bzxx,jhfyd.fyzh,jhfyd.fkfs,jhfyd.ljye,jhfyd.sdjy,jhfyd.je,jhfyd.bmsdjy,jhfyd.bmljye
+        from cw_new_jhfyd jhfyd
+        LEFT JOIN da_bmda bmda ON jhfyd.bmbh = bmda.bmbh
+        LEFT JOIN da_gysda gysda ON jhfyd.gysbh=gysda.gysbh
+        LEFT JOIN da_ygda ygda ON jhfyd.ywy=ygda.ygbh
+        <where>
+            <if test="pzh!=null and pzh!=''">and pzh = #{pzh}</if>
+        </where>
+    </select>
+</mapper>

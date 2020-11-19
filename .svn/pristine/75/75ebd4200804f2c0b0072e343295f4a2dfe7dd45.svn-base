@@ -1,0 +1,157 @@
+package com.springboot.web.bluetooth;
+
+
+import com.baomidou.mybatisplus.plugins.Page;
+import com.springboot.common.GenerateId;
+import com.springboot.common.JBDate;
+import com.springboot.configurer.JSON;
+import com.springboot.core.Result;
+import com.springboot.core.ResultGenerator;
+import com.springboot.model.bluetooth.BlueToothExt;
+import com.springboot.model.equip.BaseEquip;
+import com.springboot.model.org.BaseOrg;
+import com.springboot.service.bluetooth.BlueToothExtService;
+import com.springboot.service.equip.BaseEquipService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.annotation.Resource;
+import java.util.*;
+
+/**
+ * <p>
+ *  前端控制器
+ * </p>
+ *
+ * @author zjq
+ * @since 2020-08-26
+ */
+@Controller
+@RequestMapping("/api/blueToothExt")
+public class BlueToothExtController {
+
+    @Resource
+    private BlueToothExtService blueToothExtService;
+    @Resource
+    private BaseEquipService baseEquipService;
+    @PostMapping("/add")
+    public Result add(@RequestBody BlueToothExt blueToothExt) {
+        String type=blueToothExt.getType();
+        if(StringUtils.isNotEmpty(type)&&"1".equals(type)){
+            String sn=blueToothExt.getSn();
+            if(StringUtils.isNotEmpty(sn)){
+                 //根据sn获取uuid
+                BaseEquip baseEquip=baseEquipService.findBySn("",sn);
+                if(baseEquip!=null){
+                    String uuid=baseEquip.getUuid();
+                    BlueToothExt oldBean=blueToothExtService.findByMac("",uuid);
+                    if(oldBean!=null){
+                        blueToothExtService.deleteById("",oldBean.getId());
+                    }
+                    //组合对象
+                    List<BlueToothExt> list=new ArrayList<BlueToothExt>();
+                    blueToothExt = (BlueToothExt) blueToothExt.clone();
+                    blueToothExt.setCreateTime(JBDate.getNowDate(new Date().getTime()));
+                    blueToothExt.setUpdateTime(JBDate.getNowDate(new Date().getTime()));
+                    blueToothExt.setMac(uuid);
+                    blueToothExt.setId(GenerateId.generIds());
+                    blueToothExt.setSl(1);
+                    blueToothExt.setQybz(0);
+                    blueToothExt.setPpid("748202011253542913");
+                    blueToothExt.setUserId("system");
+                    blueToothExt.setDeviceName("iData");
+                    list.add(blueToothExt);
+                    boolean flag=blueToothExtService.saveAll("",list);
+                }else{
+                    return ResultGenerator.genErrorSetMsgErrorResult("sn为"+sn+"设备未授权");
+                }
+            }else{
+                return ResultGenerator.genErrorSetMsgErrorResult("sn为空");
+            }
+        }else{
+            //mac地址是否存在,如果存在先删防止mac地址重复
+            String[] macArray=blueToothExt.getMacArr();
+            if(macArray!=null&&macArray.length>0){
+                for (int i = 0; i < macArray.length; i++) {
+                    BlueToothExt oldBean=blueToothExtService.findByMac("",macArray[i]);
+                    if(oldBean!=null){
+                        blueToothExtService.deleteById("",oldBean.getId());
+                    }
+                }
+                //组合对象
+                List<BlueToothExt> list=new ArrayList<BlueToothExt>();
+                for (int j = 0; j < macArray.length; j++) {
+                    blueToothExt = (BlueToothExt) blueToothExt.clone();
+                    blueToothExt.setCreateTime(JBDate.getNowDate(new Date().getTime()));
+                    blueToothExt.setUpdateTime(JBDate.getNowDate(new Date().getTime()));
+                    blueToothExt.setMac(macArray[j]);
+                    blueToothExt.setId(GenerateId.generIds());
+                    blueToothExt.setSl(1);
+                    blueToothExt.setQybz(0);
+                    list.add(blueToothExt);
+                }
+                boolean flag=blueToothExtService.saveAll("",list);
+            }
+        }
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @PostMapping("/delete")
+    public Result delete(@RequestBody BlueToothExt blueToothExt) {
+        Integer flag=blueToothExtService.deleteById("",blueToothExt.getId());
+        return ResultGenerator.genSuccessResult();
+    }
+    @PostMapping("/update")
+    public Result update(@RequestBody BlueToothExt blueToothExt) {
+        String type=blueToothExt.getType();
+        BlueToothExt bean=null;
+        if(StringUtils.isNotEmpty(type)&&"1".equals(type)){
+            bean=blueToothExtService.findById("",blueToothExt.getId());
+            if(bean!=null){
+                bean.setSn(blueToothExt.getSn());
+                blueToothExtService.updateById("",bean);
+            }else{
+                return ResultGenerator.genErrorSetMsgErrorResult("id为"+blueToothExt.getId()+"无数据");
+            }
+        }else{
+            blueToothExt.setUpdateTime(JBDate.getNowDate(new Date().getTime()));
+            blueToothExtService.updateById("",blueToothExt);
+        }
+        return ResultGenerator.genSuccessResult();
+    }
+    @PostMapping("/detail")
+    @JSON(type = BlueToothExt.class, filter = "yhbh,macArr,type,key,sixCode,yhbh,pageNo,pageSize")
+    public Result detail(@RequestBody BlueToothExt blueToothExt) {
+        Result result=null;
+        BlueToothExt bean = blueToothExtService.findById("",blueToothExt.getId());
+        result=ResultGenerator.genSuccessResult(bean);
+        return result;
+    }
+    @PostMapping("/findByMac")
+    @JSON(type = BlueToothExt.class, filter = "sixCode,yhbh,pageNo,pageSize")
+    public Result findByMac(@RequestBody BlueToothExt blueToothExt) {
+        Result result=null;
+        BlueToothExt bean = blueToothExtService.findByMac("",blueToothExt.getMac());
+        if(bean!=null){
+            result=ResultGenerator.genSuccessResult(bean.getMac());
+        }else{
+            result=ResultGenerator.genErrorSetMsgErrorResult("mac地址不存在");
+        }
+        return result;
+    }
+    @PostMapping("/getPage")
+    @JSON(type = BlueToothExt.class, filter = "yhbh,macArr,type,key,sixCode,pageNo,pageSize")
+    public Result getPage(@RequestBody BlueToothExt blueToothExt) {
+        Map<String,String> param=new HashMap<String,String>();
+
+        Page<BlueToothExt> page = new Page<BlueToothExt>(blueToothExt.getPageNo(), blueToothExt.getPageSize());
+        Page<BlueToothExt> blueToothExtList = blueToothExtService.getPage("",page,blueToothExt);
+
+        return ResultGenerator.genSuccessResult(blueToothExtList);
+    }
+
+}
+

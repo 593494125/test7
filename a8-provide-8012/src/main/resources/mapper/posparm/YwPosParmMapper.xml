@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.posparm.YwPosParmMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.springboot.model.posparm.YwPosParm">
+        <id column="macdz" property="macdz" />
+        <result column="jqbh" property="jqbh" />
+        <result column="bmbh" property="bmbh" />
+        <result column="xpdyfs" property="xpdyfs" />
+        <result column="poswybs" property="poswybs" />
+        <result column="spzdzkl" property="spzdzkl" />
+        <result column="sfkqx" property="sfkqx" />
+        <result column="gbmr" property="gbmr" />
+        <result column="tjspsfcyjf" property="tjspsfcyjf" />
+        <result column="rjqddy" property="rjqddy" />
+        <result column="xsmrjg" property="xsmrjg" />
+        <result column="bmxssxfs" property="bmxssxfs" />
+        <result column="xstqwd" property="xstqwd" />
+        <result column="pt1" property="pt1" />
+        <result column="pt2" property="pt2" />
+        <result column="pt3" property="pt3" />
+        <result column="pt4" property="pt4" />
+        <result column="pt5" property="pt5" />
+        <result column="pt6" property="pt6" />
+        <result column="pt7" property="pt7" />
+        <result column="pt8" property="pt8" />
+        <result column="pw1" property="pw1" />
+        <result column="pw2" property="pw2" />
+        <result column="pw3" property="pw3" />
+        <result column="pw4" property="pw4" />
+        <result column="pw5" property="pw5" />
+        <result column="pw6" property="pw6" />
+        <result column="pw7" property="pw7" />
+        <result column="pw8" property="pw8" />
+        <result column="ptzt" property="ptzt" />
+        <result column="ptztdx" property="ptztdx" />
+        <result column="ptztjc" property="ptztjc" />
+        <result column="pwzt" property="pwzt" />
+        <result column="pwztdx" property="pwztdx" />
+        <result column="pwztjc" property="pwztjc" />
+        <result column="xjjejqd" property="xjjejqd" />
+        <result column="posdyjkg" property="posdyjkg" />
+        <result column="ickcd" property="ickcd" />
+        <result column="hyzlms" property="hyzlms" />
+        <result column="jcbyj" property="jcbyj" />
+        <result column="mrdjskddygs" property="mrdjskddygs" />
+        <result column="mrdjtkddygs" property="mrdjtkddygs" />
+        <result column="mrxsrjddygs" property="mrxsrjddygs" />
+        <result column="mrxsxpdygs" property="mrxsxpdygs" />
+        <result column="YW_SRD" property="ywSrd" />
+        <result column="YW_JQD" property="ywJqd" />
+        <result column="log_time" property="logTime" />
+        <result column="wechatPayCompanyId" property="wechatPayCompanyId" />
+        <result column="wechatPayCompanyName" property="wechatPayCompanyName" />
+        <result column="posJffs" property="posJffs" />
+        <result column="f4gbwz" property="f4gbwz" />
+        <result column="qyhyzdzkl" property="qyhyzdzkl" />
+        <result column="hyzdzklz" property="hyzdzklz" />
+        <result column="pingjiaxitong" property="pingjiaxitong" />
+        <result column="sfhbspmx" property="sfhbspmx" />
+        <result column="cxsfjf" property="cxsfjf" />
+        <result column="xjzh" property="xjzh" />
+        <result column="xykzh" property="xykzh" />
+        <result column="ngzh" property="ngzh" />
+        <result column="ngqzh" property="ngqzh" />
+        <result column="yhezh" property="yhezh" />
+        <result column="jezdzkl" property="jezdzkl" />
+        <result column="sfqyyl" property="sfqyyl" />
+        <result column="sfqykd" property="sfqykd" />
+        <result column="sfqysmhy" property="sfqysmhy" />
+        <result column="jdsOrgId" property="jdsOrgId" />
+        <result column="payKey" property="payKey" />
+        <result column="payPrivateKey" property="payPrivateKey" />
+        <result column="payPublicKey" property="payPublicKey" />
+        <result column="qyssjedyyje" property="qyssjedyyje" />
+        <result column="jylsh" property="jylsh" />
+        <result column="djcxbzx" property="djcxbzx" />
+        <result column="unique_id" property="uniqueId" />
+        <result column="rjdaqdid" property="rjdaqdid" />
+        <result column="rjdabm" property="rjdabm" />
+        <result column="lyjsbm" property="lyjsbm" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        macdz, jqbh, bmbh, xpdyfs, poswybs, spzdzkl, sfkqx, gbmr, tjspsfcyjf, rjqddy, xsmrjg, bmxssxfs, xstqwd, pt1, pt2, pt3, pt4, pt5, pt6, pt7, pt8, pw1, pw2, pw3, pw4, pw5, pw6, pw7, pw8, ptzt, ptztdx, ptztjc, pwzt, pwztdx, pwztjc, xjjejqd, posdyjkg, ickcd, hyzlms, jcbyj, mrdjskddygs, mrdjtkddygs, mrxsrjddygs, mrxsxpdygs, YW_SRD, YW_JQD, log_time, wechatPayCompanyId, wechatPayCompanyName, posJffs, f4gbwz, qyhyzdzkl, hyzdzklz, pingjiaxitong, sfhbspmx, cxsfjf, xjzh, xykzh, ngzh, ngqzh, yhezh, jezdzkl, sfqyyl, sfqykd, sfqysmhy, jdsOrgId, payKey, payPrivateKey, payPublicKey, qyssjedyyje, jylsh, djcxbzx, unique_id, rjdaqdid, rjdabm, lyjsbm
+    </sql>
+
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.dao.goods.DaSpSpdaMapper">
+    <resultMap id="BaseResultMap" type="com.springboot.model.goods.DaSpSpda">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="spkh" property="spkh" />
+        <result column="hplb" property="hplb" />
+        <result column="ksmc" property="ksmc" />
+        <result column="spsx" property="spsx" />
+        <result column="fztm" property="fztm" />
+        <result column="jldw" property="jldw" />
+        <result column="bzxx" property="bzxx" />
+        <result column="tmfa" property="tmfa" />
+        <result column="jypp" property="jypp" />
+        <result column="gysbh" property="gysbh" />
+        <result column="gysmc" property="gysmc" />
+        <result column="spjj" property="spjj" />
+        <result column="spnf" property="spnf" />
+        <result column="spml" property="spml" />
+        <result column="spxb" property="spxb" />
+        <result column="ssrq" property="ssrq" />
+        <result column="sjry" property="sjry" />
+        <result column="spbxz" property="spbxz" />
+        <result column="lsjg" property="lsjg" />
+        <result column="dpjg" property="dpjg" />
+        <result column="jhjg" property="jhjg" />
+        <result column="jjzk" property="jjzk" />
+        <result column="dbjg" property="dbjg" />
+        <result column="lszk" property="lszk" />
+        <result column="lshyj" property="lshyj" />
+        <result column="lshyzk" property="lshyzk" />
+        <result column="pfjg1" property="pfjg1" />
+        <result column="pfjg2" property="pfjg2" />
+        <result column="pfjg3" property="pfjg3" />
+        <result column="pfjg4" property="pfjg4" />
+        <result column="pfcxj" property="pfcxj" />
+        <result column="pfzk" property="pfzk" />
+        <result column="zkzxz" property="zkzxz" />
+        <result column="spsx1" property="spsx1" />
+        <result column="spsx2" property="spsx2" />
+        <result column="spsx3" property="spsx3" />
+        <result column="spsx4" property="spsx4" />
+        <result column="tybz" property="tybz" />
+        <result column="cmzbm" property="cmzbm" />
+        <result column="yw_tybz" property="ywTybz" />
+        <result column="wdjg" property="wdjg" />
+        <result column="spkw" property="spkw" />
+        <result column="cmbtxx" property="cmbtxx" />
+        <result column="fhqx" property="fhqx" />
+        <result column="bz1" property="bz1" />
+        <result column="bz16" property="bz16" />
+        <result column="bz9" property="bz9" />
+        <result column="bz19" property="bz19" />
+        <result column="qdl" property="qdl" />
+        <result column="xgsj" property="xgsj" />
+        <result column="bz3" property="bz3" />
+        <result column="bz21" property="bz21" />
+        <result column="bz13" property="bz13" />
+        <result column="bz6" property="bz6" />
+        <result column="bz18" property="bz18" />
+        <result column="bz12" property="bz12" />
+        <result column="sfqb" property="sfqb" />
+        <result column="bz5" property="bz5" />
+        <result column="bz15" property="bz15" />
+        <result column="bz2" property="bz2" />
+        <result column="bz8" property="bz8" />
+        <result column="bz14" property="bz14" />
+        <result column="bz20" property="bz20" />
+        <result column="xgr" property="xgr" />
+        <result column="bz7" property="bz7" />
+        <result column="bz11" property="bz11" />
+        <result column="bz17" property="bz17" />
+        <result column="bz10" property="bz10" />
+        <result column="bz4" property="bz4" />
+    </resultMap>
+    <!--<sql id="BaseColumns">-->
+      <!--id,org_name,phone,address,state,path,create_time,create_user,create_user_id,update_time,update_user,update_user_id-->
+    <!--</sql>-->
+
+    <select id="findEsList" resultType="com.springboot.model.goods.EsDaSpSpdaJson">
+        select spkh,spmc as ksmc from da_sp_spda_mx
+    </select>
+
+</mapper>
